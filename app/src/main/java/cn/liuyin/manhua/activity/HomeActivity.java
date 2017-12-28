@@ -177,7 +177,7 @@ public class HomeActivity extends Activity {
                     }
 
                     //FileTool.writeFile("update.html", doc.toString());
-                    FileTool.writeFile("pc.json", data.toString(4));
+                    //FileTool.writeFile("pc.json", data.toString(4));
                     mHander.obtainMessage(1, data).sendToTarget();
                 } catch (Exception e) {
                     mHander.obtainMessage(0, "error" + e).sendToTarget();
