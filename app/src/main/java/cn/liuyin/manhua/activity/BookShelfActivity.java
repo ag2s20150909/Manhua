@@ -122,6 +122,7 @@ public class BookShelfActivity extends Activity {
             switch (p1.what) {
                 case 0:
                     String msg = (String) p1.obj;
+
                     //tv.setText(msg);
                     Toast.makeText(BookShelfActivity.this, msg, Toast.LENGTH_SHORT).show();
 
@@ -164,10 +165,16 @@ public class BookShelfActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
                 // TODO: Implement this method
-                Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                String url = "http://m.pufei.net/manhua/" + data.get(p3).get("bookid") + "/";
-                i.putExtra("url", url);
-                startActivity(i);
+                try {
+                    Intent i = new Intent(getApplicationContext(), ListActivity.class);
+                    String url = "http://m.pufei.net/manhua/" + data.get(p3).get("bookid") + "/";
+                    i.putExtra("url", url);
+                    startActivity(i);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    mHander.obtainMessage(0,e.getMessage()).sendToTarget();
+                }
             }
         });
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

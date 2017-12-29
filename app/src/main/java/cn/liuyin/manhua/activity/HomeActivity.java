@@ -30,6 +30,7 @@ import java.util.HashMap;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.DataManger;
 import cn.liuyin.manhua.tool.FileTool;
+import cn.liuyin.manhua.tool.HttpTool;
 import cn.liuyin.manhua.tool.UItool;
 
 public class HomeActivity extends Activity {
@@ -113,7 +114,13 @@ public class HomeActivity extends Activity {
                 // TODO: Implement this method
                 try {
                     //HttpTool.search1(getApplicationContext(), "狐");
-                    Document doc = Jsoup.connect(url).get();
+
+                    String d= HttpTool.httpGet(url);
+                    if (d.startsWith("error:")){
+                        mHander.obtainMessage(0,d).sendToTarget();
+                        return;
+                    }
+                    Document doc = Jsoup.parse(d,url);
                     doc.setBaseUri(update);
                     //allList
                     Elements lists;
@@ -161,7 +168,14 @@ public class HomeActivity extends Activity {
                 // TODO: Implement this method
                 try {
                     //HttpTool.search1(getApplicationContext(), "狐");
-                    Document doc = Jsoup.connect(url).get();
+                    HttpTool.httpGet("http:m.pufei.net");
+                    String d= HttpTool.httpGet(url);
+                    if (d.startsWith("error:")){
+                        mHander.obtainMessage(0,d).sendToTarget();
+                        return;
+                    }
+                    Document doc = Jsoup.parse(d,url);
+
                     Elements lists = doc.select(".cont-list").select("li");
                     JSONArray data = new JSONArray();
                     for (Element item : lists) {
@@ -175,6 +189,7 @@ public class HomeActivity extends Activity {
                         temp.put("time", item.select("dd").get(3).text());
                         data.put(temp);
                     }
+                    FileTool.writeFile("mobile.html", doc.toString());
 
                     //FileTool.writeFile("update.html", doc.toString());
                     //FileTool.writeFile("pc.json", data.toString(4));

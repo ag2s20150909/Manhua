@@ -14,55 +14,54 @@ import org.jsoup.select.Elements;
 
 import cn.liuyin.manhua.tool.ComonTool;
 import cn.liuyin.manhua.tool.FileTool;
+import cn.liuyin.manhua.tool.HttpTool;
 
 public class BookMaker {
 
-    public static JSONArray getList(Context context, String url) {
+    public static JSONArray getList(Context context, String url) throws Exception {
 
-        JSONArray marray = new JSONArray();
-        try {
-            JSONArray bookshelf = new JSONArray(FileTool.readFile("", "index.json"));
-
-            JSONObject map = new JSONObject();
-            String idtag = "manhua/";
-            int _BookId = Integer.parseInt(url.substring(url.indexOf(idtag) + idtag.length(), url.lastIndexOf("/")));
-            Document doc = Jsoup.connect(url).get();
+        String idtag = "manhua/";
+        int _BookId = Integer.parseInt(url.substring(url.indexOf(idtag) + idtag.length(), url.lastIndexOf("/")));
+        System.out.println("<<<"+_BookId);
+        String d = HttpTool.httpGet(url);
+        if (d.startsWith("error:")) {
+            return null;
+        }
+        else {
+            Document doc = Jsoup.parse(d, url);
             Elements list = doc.select(".chapter-list").select("a");
-            String title = doc.select(".main-bar").select("h1").text();
-            if (!FileTool.has(_BookId + "/config.json")) {
-                JSONObject O = new JSONObject();
-                if (FileTool.has("index.json")) {
-                    try {
-                        JSONArray indexjson = new JSONArray(FileTool.readFile("", "index.json"));
-                        JSONObject O2 = JSONHeaper.getByid(indexjson, _BookId);
-                        O.put("index", O2.getInt("possion"));
-                    } catch (Exception e) {
-                        O.put("index", 1);
-                    }
-                } else {
-                    O.put("index", 1);
-                }
-
-                FileTool.writeFiles(_BookId + "", "config.json", O.toString());
+            if (list.size()==0){
+                throw new Exception("get list faild ,the length is 0");
             }
+            String title = doc.select(".main-bar").select("h1").text();
+
             int possion = 1;
             try {
-                JSONObject O = new JSONObject(FileTool.readFile(_BookId + "", "config.json"));
-                possion = O.getInt("index");
+                JSONObject O = new JSONObject();
+
+                if (FileTool.has(_BookId+"/config.json")) {
+                    O = new JSONObject(FileTool.readFile(_BookId + "", "config.json"));
+                    possion = O.getInt("index");
+                }
+                else {
+                    O.put("index",0);
+                    FileTool.writeFiles(_BookId+"","config.json",O.toString());
+                }
 
             } catch (JSONException e) {
-                FileTool.writeError(e.getMessage());
+                throw e;
             }
+
+
+            JSONObject map = new JSONObject();
+            JSONArray bookshelf = new JSONArray(FileTool.readFile("", "index.json"));
             map.put("bookid", _BookId);
             map.put("title", title);
             map.put("sum", list.size());
             map.put("possion", possion);
             map.put("unread", list.size() - possion);
-
-
             JSONHeaper.put(bookshelf, _BookId, map);
-
-
+            JSONArray marray = new JSONArray();
             int tag = 1;
             for (int i = list.size() - 1; i >= 0; i--) {
                 Element a = list.get(i);
@@ -76,11 +75,6 @@ public class BookMaker {
             FileTool.writeFile("index.json", bookshelf.toString(4));
             FileTool.writeFiles(_BookId + "", "index.json", marray.toString(4));
             return marray;
-            //mHander.obtainMessage(1, array).sendToTarget();
-        } catch (Exception e) {
-            FileTool.writeError(e.getMessage());
-            return null;
-            //mHander.obtainMessage(0, "error" + e).sendToTarget();
         }
     }
 
@@ -140,10 +134,24 @@ public class BookMaker {
         }
     }
 
-    public static Book getBook(String url) {
+    public static Book getBook(JSONArray array, String bookid, int index) throws JSONException {
         Book book = new Book();
-        try {
-            Document doc = Jsoup.connect(url).get();
+        //如果本地有数据
+        if (FileTool.has(bookid + "/" + index + ".json")) {
+            JSONObject dd = new JSONObject(FileTool.readFile(bookid, index + ".json"));
+            book.index = dd.getInt("index");
+            book.title = dd.getString("title");
+            book.bookid = dd.getInt("bookid");
+            book.chapterId = dd.getInt("chapterId");
+            book.code = dd.getString("code");
+            return book;
+        } else {
+            String url = array.getJSONObject(index - 1).getString("url");
+            String d = HttpTool.httpGet(url);
+            if (d.startsWith("error:")) {
+                return null;
+            }
+            Document doc = Jsoup.parse(d, url);
             book.title = doc.select("#mangaTitle").text();
             String tag = "cp=\"";
             String str = doc.select("script").toString();
@@ -157,13 +165,8 @@ public class BookMaker {
             book.bookid = Integer.parseInt(info[0].substring(info[0].indexOf("bookId:") + 7));
             book.chapterId = Integer.parseInt(info[1].substring(info[1].indexOf("chapterId:") + 10));
             book.count = Integer.parseInt(info[3].substring(info[3].indexOf("count:") + 6));
-
             FileTool.writeFile("dd.html", bookstr + book.toString());
             return book;
-
-        } catch (Exception e) {
-            return null;
-            //mHander.obtainMessage(0, "error" + e).sendToTarget();
         }
 
 

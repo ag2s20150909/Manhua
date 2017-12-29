@@ -65,7 +65,7 @@ public class SearchActivity extends Activity {
 
             @Override
             public void onClick(View p1) {
-                Toast.makeText(getApplicationContext(), "88", 1).show();
+                //Toast.makeText(getApplicationContext(), "88", 1).show();
                 if (!et.getText().toString().isEmpty()) {
                     search(et.getText().toString());
 
@@ -105,25 +105,30 @@ public class SearchActivity extends Activity {
             public void run() {
                 // TODO: Implement this method
                 try {
-
-                    Document doc = Jsoup.connect(url).get();
-                    Elements lists = doc.select(".cont-list").select("li");
-                    mHander.obtainMessage(0, "搜索到" + lists.size() + "条结果").sendToTarget();
-                    JSONArray data = new JSONArray();
-                    for (Element item : lists) {
-                        JSONObject temp = new JSONObject();
-                        temp.put("link", item.select("a").attr("abs:href"));
-                        temp.put("name", item.select("h3").text());
-                        temp.put("img", item.select("img").attr("data-src"));
-                        temp.put("author", item.select("dd").get(0).text());
-                        temp.put("type", item.select("dd").get(1).text());
-                        temp.put("new", item.select("dd").get(2).text());
-                        temp.put("time", item.select("dd").get(3).text());
-                        data.put(temp);
+                    String d = HttpTool.httpGet(url);
+                    if (d.startsWith("error:")) {
+                        mHander.obtainMessage(0, d).sendToTarget();
                     }
+                    else {
+                        Document doc = Jsoup.parse(d, url);
+                        Elements lists = doc.select(".cont-list").select("li");
+                        mHander.obtainMessage(0, "搜索到" + lists.size() + "条结果").sendToTarget();
+                        JSONArray data = new JSONArray();
+                        for (Element item : lists) {
+                            JSONObject temp = new JSONObject();
+                            temp.put("link", item.select("a").attr("abs:href"));
+                            temp.put("name", item.select("h3").text());
+                            temp.put("img", item.select("img").attr("data-src"));
+                            temp.put("author", item.select("dd").get(0).text());
+                            temp.put("type", item.select("dd").get(1).text());
+                            temp.put("new", item.select("dd").get(2).text());
+                            temp.put("time", item.select("dd").get(3).text());
+                            data.put(temp);
+                        }
 
-                    //FileTool.writeFile("update.html",doc.toString());
-                    mHander.obtainMessage(1, data).sendToTarget();
+                        //FileTool.writeFile("update.html",doc.toString());
+                        mHander.obtainMessage(1, data).sendToTarget();
+                    }
                 } catch (Exception e) {
                     mHander.obtainMessage(0, "error" + e).sendToTarget();
                 }
@@ -160,7 +165,7 @@ public class SearchActivity extends Activity {
                 // TODO: Implement this method
                 Intent i = new Intent(getApplicationContext(), ListActivity.class);
                 i.putExtra("url", data.get(p3).get("link"));
-                Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
+                Toast.makeText(getApplicationContext(), data.get(p3).get("link"), Toast.LENGTH_SHORT).show();
                 startActivity(i);
             }
         });
@@ -174,7 +179,7 @@ public class SearchActivity extends Activity {
                 case 0:
                     String msg = (String) p1.obj;
                     //tv.setText(msg);
-                    Toast.makeText(getApplicationContext(), msg, 1).show();
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 
                     break;
                 case 1:

@@ -38,8 +38,8 @@ public class MWebViewClient extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         // TODO: Implement this method
         if (url.contains("pufei.net")) {
-            Toast.makeText(mActivity, url, 1).show();
-            mActivity.getData(url);
+            Toast.makeText(mActivity, url, Toast.LENGTH_SHORT).show();
+            //mActivity.getData(url);
             return true;
         } else {
             return super.shouldOverrideUrlLoading(view, url);

@@ -38,6 +38,8 @@ public class ReadActivity extends Activity {
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         _BookId = getIntent().getStringExtra("bookid");
+
+        //index=getIntent().getIntExtra("index",1);
         InitArray();
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//去掉信息栏
@@ -52,7 +54,8 @@ public class ReadActivity extends Activity {
         wv.setWebChromeClient(new MWebChromeClient(this));
         ComonTool.enabeCache(wv);
         //wv.loadUrl(getIntent().getStringExtra("url"));
-        getData(getIntent().getStringExtra("url"));
+
+
     }
 
     @Override
@@ -79,6 +82,7 @@ public class ReadActivity extends Activity {
         index = Integer.parseInt(getIntent().getStringExtra("index"));
         try {
             list = new JSONArray(jstr);
+            getData(list,_BookId,index);
         } catch (JSONException e) {
         }
     }
@@ -115,9 +119,9 @@ public class ReadActivity extends Activity {
         public void pre() {
             if (index > 1) {
                 try {
-                    String next = list.getJSONObject(index - 2).getString("url");
+                    int next = list.getJSONObject(index - 2).getInt("url");
                     //wv.loadData(null,null,null);
-                    getData(next);
+                    getData(list,_BookId,next);
                     index--;
                     wv.scrollTo(0, 0);
                 } catch (JSONException e) {
@@ -132,9 +136,9 @@ public class ReadActivity extends Activity {
         public void next() {
             if (index < list.length()) {
                 try {
-                    String next = list.getJSONObject(index).getString("url");
+                    int next = list.getJSONObject(index).getInt("index");
                     //wv.loadData(null,null,null);
-                    getData(next);
+                    getData(list,_BookId,next);
                     index++;
                     wv.scrollTo(0, 0);
                 } catch (JSONException e) {
@@ -152,7 +156,7 @@ public class ReadActivity extends Activity {
     }
 
 
-    public void getData(final String url) {
+    public void getData(final JSONArray dd, final String bookid, final int index) {
         new Thread(new Runnable() {
 
             @Override
@@ -160,7 +164,7 @@ public class ReadActivity extends Activity {
                 // TODO: Implement this method
                 try {
 
-                    Book book = BookMaker.getBook(url);
+                    Book book = BookMaker.getBook(dd,bookid,index);
                     if (book != null) {
                         mHander.obtainMessage(1, book).sendToTarget();
                     } else {
