@@ -39,13 +39,12 @@ public class ListActivity extends Activity {
         super.onCreate(savedInstanceState);
         array = new JSONArray();
         setContentView(R.layout.list);
-        lv = (ListView) findViewById(R.id.mainListView1);
+        lv = findViewById(R.id.mainListView1);
         url = getIntent().getStringExtra("url");
         saveList(url);
 
         String idtag = "manhua/";
         _BookId = url.substring(url.indexOf(idtag) + idtag.length(), url.lastIndexOf("/"));
-        System.out.println("<<<"+_BookId);
 
         try {
             if (FileTool.has(_BookId+"/index.json")){
@@ -78,6 +77,8 @@ public class ListActivity extends Activity {
                 array = new JSONArray(FileTool.readFile(_BookId, "index.json"));
                 showList(array);
             } catch (JSONException e) {
+                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+                e.printStackTrace();
             }
         }
     }
@@ -177,7 +178,7 @@ public class ListActivity extends Activity {
         }
 
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
                 HashMap<String, String> map = new HashMap<>();
@@ -229,8 +230,6 @@ public class ListActivity extends Activity {
             switch (p1.what) {
                 case 0:
                     String msg = (String) p1.obj;
-                    System.err.println(msg);
-                    //tv.setText(msg);
                     Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
 
                     break;

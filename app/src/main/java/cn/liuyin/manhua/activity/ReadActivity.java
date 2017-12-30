@@ -2,10 +2,13 @@ package cn.liuyin.manhua.activity;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -16,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.Book;
 import cn.liuyin.manhua.data.BookMaker;
+import cn.liuyin.manhua.data.JSONHeaper;
 import cn.liuyin.manhua.tool.ComonTool;
 import cn.liuyin.manhua.tool.FileTool;
 import cn.liuyin.manhua.tool.JSFunction;
@@ -52,6 +57,7 @@ public class ReadActivity extends Activity {
         setContentView(wv);
         wv.setWebViewClient(new MWebViewClient(this));
         wv.setWebChromeClient(new MWebChromeClient(this));
+        wv.setOnLongClickListener(new onLongClick());
         ComonTool.enabeCache(wv);
         //wv.loadUrl(getIntent().getStringExtra("url"));
 
@@ -82,8 +88,10 @@ public class ReadActivity extends Activity {
         index = Integer.parseInt(getIntent().getStringExtra("index"));
         try {
             list = new JSONArray(jstr);
-            getData(list,_BookId,index);
+            getData(list, _BookId, index);
         } catch (JSONException e) {
+            e.printStackTrace();
+            mHander.obtainMessage(0, e.getMessage()).sendToTarget();
         }
     }
 
@@ -107,6 +115,8 @@ public class ReadActivity extends Activity {
             Toast.makeText(getApplicationContext(), "还有" + (list.length() - O.getInt("index")) + "章未读", Toast.LENGTH_LONG).show();
             FileTool.writeFiles(mbook.bookid + "", "config.json", O.toString());
         } catch (JSONException e) {
+            mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+            e.printStackTrace();
         }
         BookMaker.makeHtml(wv, mbook, str);
 
@@ -114,38 +124,105 @@ public class ReadActivity extends Activity {
     }
 
 
+    private class onLongClick implements View.OnLongClickListener {
+
+        @Override
+        public boolean onLongClick(View v) {
+            showSS();
+            return false;
+        }
+    }
+
+    public void showSS() {
+        // 创建数据
+
+        final String[] items = new String[]{"重试", "下一章", "上一章"};
+        // 创建对话框构建器
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // 设置参数
+        builder.setIcon(R.mipmap.ic_launcher).setTitle("对漫画的操作").setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface p1, int p2) {
+                // TODO: Implement this method
+                switch (p2) {
+                    case 0:
+                        GoThis();
+                        break;
+                    case 1:
+                        goNext();
+                        break;
+                    case 2:
+                        goPre();
+                        break;
+                }
+
+
+            }
+        });
+
+        builder.create().show();
+    }
+
+
+    public void GoThis() {
+
+        try {
+            int next = list.getJSONObject(index - 1).getInt("index");
+            getData(list, _BookId, next);
+            wv.scrollTo(0, 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+        }
+
+    }
+
+    public void goPre() {
+        if (index > 1) {
+            try {
+                int next = list.getJSONObject(index - 2).getInt("index");
+
+                //wv.loadData(null,null,null);
+                getData(list, _BookId, next);
+                index--;
+                wv.scrollTo(0, 0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "没有了😁", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void goNext() {
+        if (index < list.length()) {
+            try {
+                int next = list.getJSONObject(index).getInt("index");
+                //wv.loadData(null,null,null);
+                getData(list, _BookId, next);
+                index++;
+                wv.scrollTo(0, 0);
+            } catch (JSONException e) {
+                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "没有了😁", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     class Android {
         @JavascriptInterface
         public void pre() {
-            if (index > 1) {
-                try {
-                    int next = list.getJSONObject(index - 2).getInt("url");
-                    //wv.loadData(null,null,null);
-                    getData(list,_BookId,next);
-                    index--;
-                    wv.scrollTo(0, 0);
-                } catch (JSONException e) {
-                }
-            } else {
-                Toast.makeText(getApplicationContext(), "没有了😁", Toast.LENGTH_SHORT).show();
-            }
-            //Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
+            goPre();
         }
 
         @JavascriptInterface
         public void next() {
-            if (index < list.length()) {
-                try {
-                    int next = list.getJSONObject(index).getInt("index");
-                    //wv.loadData(null,null,null);
-                    getData(list,_BookId,next);
-                    index++;
-                    wv.scrollTo(0, 0);
-                } catch (JSONException e) {
-                }
-            } else {
-                Toast.makeText(getApplicationContext(), "没有了😁", Toast.LENGTH_SHORT).show();
-            }
+            goNext();
             //
         }
 
@@ -164,7 +241,7 @@ public class ReadActivity extends Activity {
                 // TODO: Implement this method
                 try {
 
-                    Book book = BookMaker.getBook(dd,bookid,index);
+                    Book book = BookMaker.getBook(dd, bookid, index);
                     if (book != null) {
                         mHander.obtainMessage(1, book).sendToTarget();
                     } else {
@@ -197,7 +274,6 @@ public class ReadActivity extends Activity {
                 case 2:
                     String json = (String) p1.obj;
                     showData(json);
-                    //FileTool.writeFile("data.json", json);
                     break;
 
             }

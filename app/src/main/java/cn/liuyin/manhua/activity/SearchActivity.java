@@ -7,14 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -76,14 +74,14 @@ public class SearchActivity extends Activity {
 
     }
 
-    public void showEnptyView() {
-        TextView emptyView = new TextView(this);
-        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        emptyView.setText("对不起，没有找到哭∏_∏");
-        emptyView.setVisibility(View.GONE);
-        ((ViewGroup) lv.getParent()).addView(emptyView);
-        lv.setEmptyView(emptyView);
-    }
+//    public void showEnptyView() {
+//        TextView emptyView = new TextView(this);
+//        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+//        emptyView.setText("对不起，没有找到哭∏_∏");
+//        emptyView.setVisibility(View.GONE);
+//        ((ViewGroup) lv.getParent()).addView(emptyView);
+//        lv.setEmptyView(emptyView);
+//    }
 
 
     public void search(final String kw) {
@@ -138,7 +136,7 @@ public class SearchActivity extends Activity {
 
     private void showList(JSONArray array) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
                 HashMap<String, String> map = new HashMap<>();

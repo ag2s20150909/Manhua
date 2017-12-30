@@ -2,15 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.liuyin.manhua">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".APP"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -23,25 +23,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.ReadActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="阅读界面"></activity>
         <activity
             android:name=".activity.ListActivity"
-            android:label="@string/app_name" >
-        </activity>
-
+            android:label="章节目录"></activity>
         <activity
             android:name=".activity.BookShelfActivity"
-            android:label="书架" >
-        </activity>
-
+            android:label="书架"></activity>
         <activity
             android:name=".activity.SearchActivity"
-            android:label="搜索" >
-        </activity>-->
+            android:label="搜索" />
+        <activity android:name=".activity.SettingActivity"></activity>
     </application>
 
 </manifest>

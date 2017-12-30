@@ -1,6 +1,9 @@
 package cn.liuyin.manhua.tool;
 
 
+import android.annotation.SuppressLint;
+import android.os.Environment;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,7 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileTool {
-    static final String BASEPATH = "/sdcard/ag2sapp/manhua";
+
+    private static final String BASEPATH = Environment.getExternalStorageDirectory().getPath() + "/ag2sapp/manhua";
 
     //删除文件夹和文件夹里面的文件
     public static void deleteDir(final String pPath) {
@@ -16,7 +20,7 @@ public class FileTool {
         deleteDirWihtFile(dir);
     }
 
-    public static void deleteDirWihtFile(File dir) {
+    private static void deleteDirWihtFile(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory())
             return;
         for (File file : dir.listFiles()) {
@@ -50,11 +54,11 @@ public class FileTool {
                 file1.mkdirs();
             }
             StringBuilder sb = new StringBuilder();
-            String s = "";
+            String s;
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             while ((s = br.readLine()) != null) {
-                sb.append(s + "\n");
+                sb.append(s).append("\n");
             }
 
             br.close();
@@ -85,6 +89,7 @@ public class FileTool {
             fw.flush();
             fw.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,6 +109,7 @@ public class FileTool {
             fw.flush();
             fw.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package cn.liuyin.manhua;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
@@ -10,6 +11,7 @@ import cn.liuyin.manhua.tool.HttpTool;
  */
 
 public class APP extends Application {
+    @SuppressLint("StaticFieldLeak")
     static Context mContext;
     public static Context getContext(){return mContext;}
     @Override

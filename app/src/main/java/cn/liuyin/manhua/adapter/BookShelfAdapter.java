@@ -14,9 +14,9 @@ import java.util.HashMap;
 import cn.liuyin.manhua.R;
 
 public class BookShelfAdapter extends BaseAdapter {
-    Context mContext;
+    private Context mContext;
 
-    ArrayList<HashMap<String, String>> mDatas;
+    private ArrayList<HashMap<String, String>> mDatas;
 
     public BookShelfAdapter(Context context, ArrayList<HashMap<String, String>> datas) {
         this.mContext = context;
@@ -45,7 +45,7 @@ public class BookShelfAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         HashMap<String, String> map = (HashMap<String, String>) getItem(position);
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
 
             convertView = LayoutInflater.from(mContext).inflate(

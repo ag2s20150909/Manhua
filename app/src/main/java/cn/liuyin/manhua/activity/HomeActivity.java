@@ -1,11 +1,17 @@
 package cn.liuyin.manhua.activity;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -34,7 +40,10 @@ import cn.liuyin.manhua.tool.HttpTool;
 import cn.liuyin.manhua.tool.UItool;
 
 public class HomeActivity extends Activity {
-    String cmd = "Du7JUm25x4";
+
+
+    private final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
+
     String update = "http://m.pufei.net/manhua/update.html";
     String paihang = "http://m.pufei.net/manhua/paihang.html";
     String rexue = "http://m.pufei.net/shaonianrexue/";
@@ -77,7 +86,6 @@ public class HomeActivity extends Activity {
                 .addButton("恐怖灵异")
                 .addButton("最近更新")
                 .addButton("连载大全");
-        ;
 
         ui.Build();
 
@@ -87,6 +95,7 @@ public class HomeActivity extends Activity {
 
         setContentView(l);
         getHtml(update);
+        checkPermission();
 
     }
 
@@ -95,15 +104,80 @@ public class HomeActivity extends Activity {
     protected void onStart() {
         // TODO: Implement this method
         super.onStart();
+
+        DataManger.scanChanges();
         //初始化书架
         if (!FileTool.has("index.json")) {
             FileTool.writeFile("index.json", "[]");
         }
-        DataManger.scanChanges();
-
 
         //ComonTool.copy2System(this,cmd);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, SettingActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /*检查权限
+
+     */
+
+
+    public void checkPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                        , WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+            }
+        }
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        handleGrantResults(requestCode, grantResults);
+
+    }
+
+    private void handleGrantResults(int requestCode, int[] grantResults) {
+        if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission Granted 获得权限后执行xxx
+                Toast.makeText(this, "获得读取权限成功", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission Denied 拒绝后xx的操作。
+                Toast.makeText(this, "没有获得读取权限，应用可能无法使用", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /*
+    检查权限结束
+     */
+
+
+
 
 
     public void getPcHtml(final String url) {
@@ -137,13 +211,13 @@ public class HomeActivity extends Activity {
                         temp.put("link", nurl.substring(0, nurl.lastIndexOf("/") + 1));
                         temp.put("name", item.select("a.video").text());
                         temp.put("img", "");
-                        temp.put("author", "");
+                        temp.put("author", "缺少作者信息");
                         temp.put("type", "");
                         temp.put("new", item.select("a.red").text());
                         if (url.endsWith("update.html")) {
                             temp.put("time", item.select("span.red").text());
                         } else {
-                            temp.put("time", "时间未知");
+                            temp.put("time", "缺少时间信息");
                         }
                         data.put(temp);
                     }
@@ -204,7 +278,7 @@ public class HomeActivity extends Activity {
 
     private void showList(JSONArray array) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
                 HashMap<String, String> map = new HashMap<>();

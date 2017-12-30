@@ -6,7 +6,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 public class MWebChromeClient extends WebChromeClient {
-    Activity mActivity;
+    private Activity mActivity;
 
     public MWebChromeClient(Activity activity) {
         mActivity = activity;

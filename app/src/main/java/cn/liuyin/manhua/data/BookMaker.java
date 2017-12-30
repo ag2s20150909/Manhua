@@ -49,6 +49,7 @@ public class BookMaker {
                 }
 
             } catch (JSONException e) {
+                e.printStackTrace();
                 throw e;
             }
 
@@ -92,13 +93,13 @@ public class BookMaker {
             JSONArray imglist = new JSONArray(str);
             obj.put("images", imglist);
 
-            String data = "<html><head>" +
+            StringBuilder data = new StringBuilder("<html><head>" +
                     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no\">" +
                     "<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/css/main.css\" >" +
-                    "</head>";
-            data += "<body>";
-            data += "<h2  id=\"title\">" + mbook.title + "(" + mbook.count + ")" + "</h3>";
-            data += "<div id=\"main\" >";
+                    "</head>");
+            data.append("<body>");
+            data.append("<h2  id=\"title\">").append(mbook.title).append("(").append(mbook.count).append(")").append("</h3>");
+            data.append("<div id=\"main\" >");
 
             for (int i = 0; i < imglist.length(); i++) {
                 String img;
@@ -108,29 +109,30 @@ public class BookMaker {
                 } else {
                     img = "http://f.pufei.net/" + imglist.getString(i);
                 }
-                data += "<img  class=\"lazy\" data-src=\"file:///android_asset/images/loading.gif\" width=\"100%;\" src=\"" + img + "\">";
+                data.append("<img  class=\"lazy\" data-src=\"file:///android_asset/images/loading.gif\" width=\"100%;\" src=\"").append(img).append("\">");
 
             }
-            data += "</div>";
+            data.append("</div>");
             FileTool.writeFiles(mbook.bookid + "", mbook.index + ".json", obj.toString());
             //String next=list.getJSONObject(index).getString("url");
-            data += "<div id=\"buttom\"  >";
-            data += "<button class=\"button\" id=\"pre\"  onclick=\"" + "Android.pre();" + "\">上一章</button>";
-            data += "<button class=\"button\" id=\"next\"  onclick=\"" + "Android.next();" + "\">下一章</button>";
-            data += "</div>";
+            data.append("<div id=\"buttom\"  >");
+            data.append("<button class=\"button\" id=\"pre\"  onclick=\"" + "Android.pre();" + "\">上一章</button>");
+            data.append("<button class=\"button\" id=\"next\"  onclick=\"" + "Android.next();" + "\">下一章</button>");
+            data.append("</div>");
             //data+="<script src=\"file:///android_asset/js/echo.min.js\"></script>";
-            data += "<script>";
+            data.append("<script>");
 //			data+="Echo.init({"+
 //				"offset: 0,"+
 //				"throttle: 0"+
 //			"});";
 
-            data += "</script>";
-            data += "</body</html>";
-            FileTool.writeFile("test.html", data);
+            data.append("</script>");
+            data.append("</body</html>");
+            FileTool.writeFile("test.html", data.toString());
             wv.clearHistory();
-            wv.loadDataWithBaseURL(null, data, "text/html", "utf-8", null);
+            wv.loadDataWithBaseURL(null, data.toString(), "text/html", "utf-8", null);
         } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -144,6 +146,7 @@ public class BookMaker {
             book.bookid = dd.getInt("bookid");
             book.chapterId = dd.getInt("chapterId");
             book.code = dd.getString("code");
+            book.count = dd.getInt("count");
             return book;
         } else {
             String url = array.getJSONObject(index - 1).getString("url");

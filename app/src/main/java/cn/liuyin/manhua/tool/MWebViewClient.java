@@ -56,6 +56,7 @@ public class MWebViewClient extends WebViewClient {
         //view.loadUrl("javascript:alert('hhh');");
     }
 
+
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 

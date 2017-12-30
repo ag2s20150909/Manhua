@@ -73,7 +73,7 @@ public class JSONHeaper {
 
     public static boolean moveDownById(JSONArray array, int bookid, int index) {
         int tag = 0;
-        int tag2 = 0;
+        int tag2;
         try {
             JSONArray temparray = new JSONArray();
             for (int i = 0; i < array.length(); i++) {

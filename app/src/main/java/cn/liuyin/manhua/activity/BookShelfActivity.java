@@ -84,14 +84,6 @@ public class BookShelfActivity extends Activity {
             public void run() {
                 // TODO: Implement this method
                 try {
-                    long ms = System.currentTimeMillis();
-                    if (FileTool.has("time.json")) {
-                        JSONObject oo = new JSONObject(FileTool.readFile("", "time.json"));
-                        ms = ms - oo.getLong("ms");
-                    } else {
-                        ms = 0;
-                    }
-
                     for (int i = 0; i < array.length(); i++) {
                         String url = "http://m.pufei.net/manhua/" + array.getJSONObject(i).getInt("bookid") + "/";
                         BookMaker.getList(BookShelfActivity.this, url);
@@ -144,7 +136,7 @@ public class BookShelfActivity extends Activity {
 
     private void showList(JSONArray marray) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
         for (int i = 0; i < marray.length(); i++) {
             try {
                 HashMap<String, String> map = new HashMap<>();
@@ -232,6 +224,8 @@ public class BookShelfActivity extends Activity {
                     FileTool.writeFile("index.json", array.toString(4));
                     showList(array);
                 } catch (JSONException e) {
+                    mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+                    e.printStackTrace();
                 }
             }
         });

@@ -15,7 +15,7 @@ public class UItool {
     public UItool(ViewGroup view, View.OnClickListener listener) {
         this.mview = view;
         this.mlistener = listener;
-        btns = new LinkedList<Button>();
+        btns = new LinkedList<>();
     }
 
     public void Build() {

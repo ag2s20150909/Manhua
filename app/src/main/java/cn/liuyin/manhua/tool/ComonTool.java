@@ -1,6 +1,7 @@
 package cn.liuyin.manhua.tool;
 
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,12 +28,7 @@ public class ComonTool {
         return dest;
     }
 
-    /**
-     * 检测当前网络可用
-     *
-     * @param context
-     * @return
-     */
+
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -6,21 +6,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+
 import java.net.URLEncoder;
-import java.util.Random;
+
 
 import cn.liuyin.manhua.APP;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,7 +54,7 @@ public class HttpTool {
         System.err.println(ip+":"+port);
         OkHttpClient client = new OkHttpClient.Builder()
                 .cookieJar(CookieManager.getInstance(APP.getContext()))
-                .proxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(ip,port)))
+                //.proxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(ip,port)))
                 .build();
         Request request = new Request.Builder().get().url(url)
                 .header("Referer", "m.pufei.net")
@@ -106,23 +101,12 @@ public class HttpTool {
         try {
             kw = URLEncoder.encode(kw, "gb2312");
         } catch (UnsupportedEncodingException e) {
-        }
-        String ip="";
-        int port=0;
-        try {
-            JSONArray ips=new JSONArray(FileTool.readFile("","ips.json"));
-
-            int s=0;
-            ip=ips.getJSONObject(s).getString("ip");
-            port=Integer.parseInt(ips.getJSONObject(s).getString("port"));
-        }
-        catch (Exception e){
             e.printStackTrace();
-
         }
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .cookieJar(CookieManager.getInstance(context))
-                .proxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(ip,port)))
+                //.proxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(ip,port)))
                 .build();
 
         Request request = new Request.Builder().get().url("http://m.pufei.net/e/search/?searchget=1&tbname=mh&show=title,player,playadmin,bieming,pinyin&tempid=4&keyboard=" + kw).header("Referer", "http://ww.pufei.net/").build();
