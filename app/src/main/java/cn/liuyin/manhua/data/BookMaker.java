@@ -119,12 +119,8 @@ public class BookMaker {
             data.append("<button class=\"button\" id=\"pre\"  onclick=\"" + "Android.pre();" + "\">上一章</button>");
             data.append("<button class=\"button\" id=\"next\"  onclick=\"" + "Android.next();" + "\">下一章</button>");
             data.append("</div>");
-            //data+="<script src=\"file:///android_asset/js/echo.min.js\"></script>";
+
             data.append("<script>");
-//			data+="Echo.init({"+
-//				"offset: 0,"+
-//				"throttle: 0"+
-//			"});";
 
             data.append("</script>");
             data.append("</body</html>");

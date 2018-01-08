@@ -34,7 +34,6 @@ public class BookShelfActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: Implement this method
         super.onCreate(savedInstanceState);
 
         lv = new ListView(this);
@@ -52,14 +51,12 @@ public class BookShelfActivity extends Activity {
 
     @Override
     protected void onStart() {
-        // TODO: Implement this method
         super.onStart();
         //scanChanges();
     }
 
     @Override
     protected void onRestart() {
-        // TODO: Implement this method
         super.onRestart();
         update();
     }
@@ -82,7 +79,7 @@ public class BookShelfActivity extends Activity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
                     for (int i = 0; i < array.length(); i++) {
                         String url = "http://m.pufei.net/manhua/" + array.getJSONObject(i).getInt("bookid") + "/";
@@ -162,10 +159,9 @@ public class BookShelfActivity extends Activity {
                     String url = "http://m.pufei.net/manhua/" + data.get(p3).get("bookid") + "/";
                     i.putExtra("url", url);
                     startActivity(i);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    mHander.obtainMessage(0,e.getMessage()).sendToTarget();
+                    mHander.obtainMessage(0, e.getMessage()).sendToTarget();
                 }
             }
         });
