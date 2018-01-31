@@ -8,69 +8,55 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
+
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookShelfAdapter;
-import cn.liuyin.manhua.data.BookMaker;
-import cn.liuyin.manhua.data.JSONHeaper;
-import cn.liuyin.manhua.tool.FileTool;
+import cn.liuyin.manhua.data.bean.ChaptersBean;
+import cn.liuyin.manhua.data.tool.BookMaker;
+import cn.liuyin.manhua.data.tool.BookShelf;
 
-public class BookShelfActivity extends Activity {
-    JSONArray array;
+
+public class BookShelfActivity extends BaseActivity {
+
+    BookShelf bookshelf;
+    BookShelfAdapter adapter;
     ListView lv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO: Implement this method
         super.onCreate(savedInstanceState);
 
         lv = new ListView(this);
         setContentView(lv);
-        try {
-            array = new JSONArray(FileTool.readFile("", "index.json"));
-
-            showList(array);
-        } catch (JSONException e) {
-            mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-        }
+        bookshelf = BookShelf.getBookShelf();
+        //adapter = new BookShelfAdapter(this, bookshelf);
+        showList(bookshelf, true);
         //scanChanges();
 
     }
 
     @Override
     protected void onStart() {
+        // TODO: Implement this method
         super.onStart();
-        //scanChanges();
+        BookShelf.sortBooks();
+        bookshelf = BookShelf.getBookShelf();
+        showList(bookshelf, false);
     }
 
     @Override
     protected void onRestart() {
+        // TODO: Implement this method
         super.onRestart();
-        update();
-    }
 
-
-    public void update() {
-        try {
-
-            array = new JSONArray(FileTool.readFile("", "index.json"));
-
-            showList(array);
-        } catch (JSONException e) {
-            mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-        }
     }
 
 
@@ -79,21 +65,22 @@ public class BookShelfActivity extends Activity {
 
             @Override
             public void run() {
-
+                // TODO: Implement this method
                 try {
-                    for (int i = 0; i < array.length(); i++) {
-                        String url = "http://m.pufei.net/manhua/" + array.getJSONObject(i).getInt("bookid") + "/";
-                        BookMaker.getList(BookShelfActivity.this, url);
-                    }
-                    JSONObject O = new JSONObject();
-                    O.put("ms", System.currentTimeMillis());
-                    FileTool.writeFile("time.json", O.toString());
 
 
-                    if (array != null) {
-                        mHander.obtainMessage(1, array).sendToTarget();
-                    } else {
-                        mHander.obtainMessage(0, "error get list error").sendToTarget();
+                    for (int i = 0; i < bookshelf.books.size(); i++) {
+
+                        ChaptersBean chapter = BookMaker.getList(BookShelfActivity.this, bookshelf.books.get(i));
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO: Implement this method
+                                bookshelf = BookShelf.getBookShelf();
+                                adapter.updateView(bookshelf);
+                            }
+                        });
                     }
 
 
@@ -117,8 +104,7 @@ public class BookShelfActivity extends Activity {
 
                     break;
                 case 1:
-                    JSONArray ss = (JSONArray) p1.obj;
-                    update();
+
 
 
                     break;
@@ -131,24 +117,16 @@ public class BookShelfActivity extends Activity {
         }
     });
 
-    private void showList(JSONArray marray) {
+    private void showList(final BookShelf data, boolean reload) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        for (int i = 0; i < marray.length(); i++) {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                JSONObject temp = marray.getJSONObject(i);
-                map.put("bookid", temp.getInt("bookid") + "");
-                map.put("name", temp.getString("title"));
-                map.put("unread", temp.getInt("unread") + "");
-                data.add(map);
-            } catch (JSONException e) {
-                mHander.obtainMessage(0, e.getMessage());
-            }
+        if (reload) {
+            adapter = new BookShelfAdapter(BookShelfActivity.this, data);
+            lv.setAdapter(adapter);
+        } else {
+            adapter.updateView(data);
         }
-        BookShelfAdapter adapter = new BookShelfAdapter(BookShelfActivity.this, data);
-        lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
-        lv.setAdapter(adapter);
+        // lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -156,8 +134,10 @@ public class BookShelfActivity extends Activity {
                 // TODO: Implement this method
                 try {
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                    String url = "http://m.pufei.net/manhua/" + data.get(p3).get("bookid") + "/";
-                    i.putExtra("url", url);
+                    i.putExtra("url", data.books.get(p3).link);
+                    i.putExtra("book", data.books.get(p3));
+                    BookShelf.addBook(data.books.get(p3));
+
                     startActivity(i);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -180,9 +160,8 @@ public class BookShelfActivity extends Activity {
 
 
     public void showSS(final int index) {
-        // 创建数据
-        final int[] ids = JSONHeaper.getIds(array, "title");
-        final String[] items = new String[]{"置顶", "上移", "下移", "删除", "更新"};
+
+        final String[] items = new String[]{"置顶漫画", "上移漫画", "下移漫画", "删除漫画", "检查更新", "更新时间排序", "阅读时间排序", "未读章节排序"};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
@@ -191,43 +170,49 @@ public class BookShelfActivity extends Activity {
             @Override
             public void onClick(DialogInterface p1, int p2) {
                 // TODO: Implement this method
-                Toast.makeText(getApplicationContext(), ids[index] + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), bookshelf.books.get(index).bookid + "", Toast.LENGTH_SHORT).show();
                 switch (p2) {
                     case 3:
-                        JSONHeaper.removeById(array, ids[index]);
-                        FileTool.deleteDir(ids[index] + "");
+                        //bookshelf=BookShelf.sortBooks();
+                        bookshelf = BookShelf.removeByIndex(index);
+                        //FileTool.deleteDir(ids[index] + "");
                         break;
                     case 1:
                         if (index > 0) {
-                            JSONHeaper.moveUpById(array, ids[index], 1);
+                            bookshelf = BookShelf.MoveUpByIndex(index);
                         }
                         break;
                     case 2:
-                        if (index < (ids.length - 1)) {
-                            JSONHeaper.moveDownById(array, ids[index], 1);
+                        if (index < (bookshelf.books.size() - 1)) {
+                            bookshelf = BookShelf.MoveDownByIndex(index);
                         }
 
                         break;
                     case 0:
-                        JSONHeaper.moveTopById(array, ids[index]);
+
+                        bookshelf = BookShelf.MoveTopByIndex(index);
                         break;
                     case 4:
                         ChackUpdate();
                         break;
-                }
+                    case 5:
+                        bookshelf = BookShelf.sortBooksByUpdate();
+                        break;
+                    case 6:
+                        bookshelf = BookShelf.sortBooksByRead();
+                        break;
+                    case 7:
+                        bookshelf = BookShelf.sortBooksByUnRead();
+                        break;
 
-                try {
-                    FileTool.writeFile("index.json", array.toString(4));
-                    showList(array);
-                } catch (JSONException e) {
-                    mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-                    e.printStackTrace();
                 }
+                showList(bookshelf, false);
+
+
             }
         });
 
         builder.create().show();
     }
-
 
 }

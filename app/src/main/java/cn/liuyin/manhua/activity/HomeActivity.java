@@ -1,17 +1,14 @@
 package cn.liuyin.manhua.activity;
 
 
-import android.Manifest;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -19,31 +16,32 @@ import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import com.google.gson.Gson;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import cn.liuyin.manhua.R;
-import cn.liuyin.manhua.data.DataManger;
+
+import cn.liuyin.manhua.adapter.SearchAdapter;
+import cn.liuyin.manhua.data.bean.SearchReslt;
+import cn.liuyin.manhua.data.tool.Book;
+import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.FileTool;
 import cn.liuyin.manhua.tool.HttpTool;
 import cn.liuyin.manhua.tool.UItool;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity {
 
 
-    private final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
-
+    String cmd = "Du7JUm25x4";
     String update = "http://m.pufei.net/manhua/update.html";
     String paihang = "http://m.pufei.net/manhua/paihang.html";
     String rexue = "http://m.pufei.net/shaonianrexue/";
@@ -58,11 +56,13 @@ public class HomeActivity extends Activity {
     String PClianzai = "http://www.pufei.net/manhua/lianzai.html";
     String PCupdate = "http://www.pufei.net/manhua/update.html";
 
+    Gson gson;
     ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Implement this method
+        gson = new Gson();
         super.onCreate(savedInstanceState);
         LinearLayout l = new LinearLayout(this);
         //l.setBackgroundColor(Color.WHITE);
@@ -95,7 +95,7 @@ public class HomeActivity extends Activity {
 
         setContentView(l);
         getHtml(update);
-        checkPermission();
+        test();
 
     }
 
@@ -105,79 +105,28 @@ public class HomeActivity extends Activity {
         // TODO: Implement this method
         super.onStart();
 
-        DataManger.scanChanges();
+        //BookShelf.sortByTime();
         //初始化书架
-        if (!FileTool.has("index.json")) {
-            FileTool.writeFile("index.json", "[]");
-        }
+
 
         //ComonTool.copy2System(this,cmd);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+    public void test() {
+        new Thread(new Runnable() {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_about:
-                Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, SettingActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+            @Override
+            public void run() {
 
-    /*检查权限
+                //BookShelf.sortByTime();
+                // TODO: Implement this method
+                //API api=new API(HomeActivity.this);
 
-     */
-
-
-    public void checkPermission() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}
-                        , WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+                //FileTool.writeFile("types.json",gson.toJson(api.search("女",1,50),SearchBean.class));
+                //FileTool.writeFile("types.json",api.getTypes());
             }
-        }
-
-
+        }).start();
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        handleGrantResults(requestCode, grantResults);
-
-    }
-
-    private void handleGrantResults(int requestCode, int[] grantResults) {
-        if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission Granted 获得权限后执行xxx
-                Toast.makeText(this, "获得读取权限成功", Toast.LENGTH_SHORT).show();
-            } else {
-                // Permission Denied 拒绝后xx的操作。
-                Toast.makeText(this, "没有获得读取权限，应用可能无法使用", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /*
-    检查权限结束
-     */
-
-
-
 
 
     public void getPcHtml(final String url) {
@@ -204,22 +153,22 @@ public class HomeActivity extends Activity {
 
                         lists = doc.select(".allList").select("li");
                     }
-                    JSONArray data = new JSONArray();
+                    SearchReslt data = new SearchReslt();
                     for (Element item : lists) {
-                        JSONObject temp = new JSONObject();
+                        Book temp = new Book();
                         String nurl = item.select("a.red").attr("abs:href");
-                        temp.put("link", nurl.substring(0, nurl.lastIndexOf("/") + 1));
-                        temp.put("name", item.select("a.video").text());
-                        temp.put("img", "");
-                        temp.put("author", "缺少作者信息");
-                        temp.put("type", "");
-                        temp.put("new", item.select("a.red").text());
+                        temp.link = nurl.substring(0, nurl.lastIndexOf("/") + 1);
+                        temp.name = item.select("a.video").text();
+                        temp.img = "";
+                        temp.author = "";
+                        temp.type = "";
+                        temp.newChapter = item.select("a.red").text();
                         if (url.endsWith("update.html")) {
-                            temp.put("time", item.select("span.red").text());
+                            temp.updateTime = item.select("span.red").text();
                         } else {
-                            temp.put("time", "缺少时间信息");
+                            temp.updateTime = "时间未知";
                         }
-                        data.put(temp);
+                        data.add(temp);
                     }
 
 
@@ -251,19 +200,19 @@ public class HomeActivity extends Activity {
                     Document doc = Jsoup.parse(d,url);
 
                     Elements lists = doc.select(".cont-list").select("li");
-                    JSONArray data = new JSONArray();
+                    SearchReslt data = new SearchReslt();
                     for (Element item : lists) {
-                        JSONObject temp = new JSONObject();
-                        temp.put("link", item.select("a").attr("abs:href"));
-                        temp.put("name", item.select("h3").text());
-                        temp.put("img", item.select("img").attr("data-src"));
-                        temp.put("author", item.select("dd").get(0).text());
-                        temp.put("type", item.select("dd").get(1).text());
-                        temp.put("new", item.select("dd").get(2).text());
-                        temp.put("time", item.select("dd").get(3).text());
-                        data.put(temp);
+                        Book temp = new Book();
+                        temp.link = item.select("a").attr("abs:href");
+                        temp.name = item.select("h3").text();
+                        temp.img = item.select("img").attr("data-src");
+                        temp.author = item.select("dd").get(0).text();
+                        temp.type = item.select("dd").get(1).text();
+                        temp.newChapter = item.select("dd").get(2).text();
+                        temp.updateTime = item.select("dd").get(3).text();
+                        data.add(temp);
                     }
-                    FileTool.writeFile("mobile.html", doc.toString());
+                    FileTool.writeFile("mobile.html", gson.toJson(data, SearchReslt.class));
 
                     //FileTool.writeFile("update.html", doc.toString());
                     //FileTool.writeFile("pc.json", data.toString(4));
@@ -276,29 +225,13 @@ public class HomeActivity extends Activity {
     }
 
 
-    private void showList(JSONArray array) {
+    private void showList(final SearchReslt data) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                JSONObject temp = array.getJSONObject(i);
-                map.put("link", temp.getString("link"));
-                map.put("name", temp.getString("name"));
-                map.put("author", temp.getString("author"));
-                map.put("new", temp.getString("new"));
-                map.put("time", temp.getString("time"));
-                data.add(map);
-            } catch (JSONException e) {
-                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-            }
-        }
-        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, R.layout.book_item,
-                new String[]{"author", "name", "new", "time"},
-                new int[]{R.id.author, R.id.name, R.id.new_c, R.id.time});
+        SearchAdapter adapter = new SearchAdapter(this, data);
+
         lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
         lv.setAdapter(adapter);
-        Toast.makeText(getApplicationContext(), "共有" + (data.size()) + "条结果", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "共有" + (data.results.size()) + "条结果", Toast.LENGTH_LONG).show();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -306,8 +239,10 @@ public class HomeActivity extends Activity {
 
                 // TODO: Implement this method
                 try {
+                    BookShelf.addBook(data.results.get(p3));
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                    i.putExtra("url", data.get(p3).get("link"));
+                    i.putExtra("url", data.results.get(p3).link);
+                    i.putExtra("book", data.results.get(p3));
                     //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
                     startActivity(i);
                 } catch (Exception e) {
@@ -332,7 +267,7 @@ public class HomeActivity extends Activity {
 
                     break;
                 case 1:
-                    JSONArray ss = (JSONArray) p1.obj;
+                    SearchReslt ss = (SearchReslt) p1.obj;
                     showList(ss);
                     break;
                 case 2:
@@ -404,6 +339,4 @@ public class HomeActivity extends Activity {
 
 
     }
-
-
 }

@@ -26,3 +26,22 @@
 -dontwarn javax.annotation.**
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+-dontwarn com.squareup.okhttp.**
+
+##---------------Begin: proguard configuration for Gson ----------
+-keep public class com.google.gson.**
+-keep public class com.google.gson.** {public private protected *;}
+
+-keepattributes Signature
+-keepattributes *Annotation*
+
+-keep public class cn.liuyin.manhua.data.tool.**
+-keep public class cn.liuyin.manhua.data.tool.**{public private protected *;}
+
+-keep public class cn.liuyin.manhua.data.bean.**
+-keep public class cn.liuyin.manhua.data.bean.**{public private protected *;}
+
+
+
+##---------------End: proguard configuration for Gson ----------

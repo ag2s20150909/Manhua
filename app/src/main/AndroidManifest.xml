@@ -24,18 +24,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ReadActivity"
-            android:label="阅读界面"></activity>
-        <activity
+
             android:name=".activity.ListActivity"
-            android:label="章节目录"></activity>
+            android:label="章节目录" />
+        <activity
+            android:name=".activity.BookContentActivity"
+            android:label="漫画内容" />
         <activity
             android:name=".activity.BookShelfActivity"
-            android:label="书架"></activity>
+            android:label="书架" />
         <activity
             android:name=".activity.SearchActivity"
             android:label="搜索" />
-        <activity android:name=".activity.SettingActivity"></activity>
+
+        <provider
+            android:name="com.squareup.picasso.PicassoProvider"
+            android:authorities="${applicationId}.com.squareup.picasso"
+            android:exported="false" />
+
     </application>
 
 </manifest>

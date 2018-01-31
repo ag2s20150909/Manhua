@@ -1,7 +1,5 @@
 package cn.liuyin.manhua.activity;
 
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,97 +11,68 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookListAdapter;
-import cn.liuyin.manhua.data.BookMaker;
-import cn.liuyin.manhua.data.DataManger;
-import cn.liuyin.manhua.data.JSONHeaper;
+import cn.liuyin.manhua.data.bean.ChaptersBean;
+import cn.liuyin.manhua.data.tool.Book;
+import cn.liuyin.manhua.data.tool.BookMaker;
+
+import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.FileTool;
 
-public class ListActivity extends Activity {
-    String _BookId;
-    JSONArray array;
+public class ListActivity extends BaseActivity {
+    Book book;
+    ChaptersBean data;
+    BookListAdapter adapter;
+
+
     String url;
 
     ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        array = new JSONArray();
+        book = (Book) getIntent().getSerializableExtra("book");
+
         setContentView(R.layout.list);
         lv = findViewById(R.id.mainListView1);
         url = getIntent().getStringExtra("url");
-        saveList(url);
-
-        String idtag = "manhua/";
-        _BookId = url.substring(url.indexOf(idtag) + idtag.length(), url.lastIndexOf("/"));
-
-        try {
-            if (FileTool.has(_BookId+"/index.json")){
-                array = new JSONArray(FileTool.readFile(_BookId, "index.json"));
-                showList(array);
-            }
-            else {
-                saveList(url);
-            }
-
-        } catch (JSONException e) {
-            mHander.obtainMessage(0,e.getMessage());
-            e.printStackTrace();
+        if (FileTool.has("bid", book.bookid + ".json")) {
+            data = BookMaker.getCatcheList(book);
+            showList(data);
         }
+
+
+        saveList();
+
 
 
 
     }
 
     @Override
-    protected void onStart() {
+    protected void onRestart() {
         // TODO: Implement this method
+        super.onRestart();
+        if (FileTool.has("bid", book.bookid + ".json")) {
+            data = BookMaker.getCatcheList(book);
+            showList(data);
+        }
+        //saveList();
+    }
 
-        DataManger.scanChanges();
+
+    @Override
+    protected void onStart() {
+
         super.onStart();
-        if (this.array != null) {
-            showList(array);
-        } else {
-            try {
-                array = new JSONArray(FileTool.readFile(_BookId, "index.json"));
-                showList(array);
-            } catch (JSONException e) {
-                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-                e.printStackTrace();
-            }
-        }
+
     }
 
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // TODO: Implement this method
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // TODO: Implement this method
-        super.onRestoreInstanceState(savedInstanceState);
-        if (this.array != null) {
-            showList(array);
-        } else {
-            try {
-                array = new JSONArray(FileTool.readFile(_BookId, "index.json"));
-                showList(array);
-            } catch (JSONException e) {
-            }
-        }
-    }
 
     @Override
     protected void onStop() {
@@ -120,7 +89,7 @@ public class ListActivity extends Activity {
     }
 
 
-    public void saveList(final String url) {
+    public void saveList() {
         new Thread(new Runnable() {
 
             @Override
@@ -128,13 +97,9 @@ public class ListActivity extends Activity {
                 // TODO: Implement this method
                 try {
 
-                    JSONArray marray = BookMaker.getList(ListActivity.this, url);
-                    ddR();
-                    if (marray == null||marray.length()==0) {
-                        mHander.obtainMessage(0, "error get list error").sendToTarget();
-                    } else {
-                        mHander.obtainMessage(1, marray).sendToTarget();
-                    }
+                    ChaptersBean data = BookMaker.getList(ListActivity.this, book);
+                    mHander.obtainMessage(1, data).sendToTarget();
+
 
                 } catch (Exception e) {
                     mHander.obtainMessage(0, "error" + e).sendToTarget();
@@ -143,63 +108,27 @@ public class ListActivity extends Activity {
         }).start();
     }
 
-    public void ddR() throws JSONException {
-        if (!FileTool.has(_BookId + "/config.json")) {
-            JSONObject O = new JSONObject();
-            if (FileTool.has("index.json")) {
-                JSONArray indexjson = new JSONArray(FileTool.readFile("", "index.json"));
-                JSONObject O2 = JSONHeaper.getByid(indexjson, Integer.parseInt(_BookId));
-                O.put("index", O2.getInt("possion"));
-            } else {
-                O.put("index", 1);
-            }
-            FileTool.writeFiles(_BookId + "", "config.json", O.toString());
+    private void showList(final ChaptersBean chapters) {
+        if (chapters == null) {
+            return;
         }
-    }
+        if (chapters.code != 0) {
+            mHander.obtainMessage(0, chapters.message).sendToTarget();
+            return;
+        }
 
-    private void showList(JSONArray array) {
         int possion = 1;
-        try {
-            JSONObject O = new JSONObject();
-            if (FileTool.has(_BookId+"/config.json")) {
-                O= new JSONObject(FileTool.readFile(_BookId, "config.json"));
-                possion = O.getInt("index");
-            }
-            else {
-                O.put("index",1);
-
-            }
-            FileTool.writeFiles(_BookId,"config.json",O.toString());
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            possion=1;
+        book = BookShelf.getBookById(book.bookid);
+        possion = book.index;
+        if (adapter == null) {
+            adapter = new BookListAdapter(ListActivity.this, chapters, possion);
+            //lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
+            lv.setAdapter(adapter);
+        } else {
+            adapter.updateView(chapters, possion);
         }
 
-
-        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                JSONObject temp = array.getJSONObject(i);
-                map.put("index", temp.getString("index"));
-                map.put("name", temp.getString("name"));
-                map.put("url", temp.getString("url"));
-                data.add(map);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-
-
-        //SimpleAdapter adapter=new SimpleAdapter(ListActivity.this,data,R.layout.book_list_item,new String[]{"index","name"},new int[]{R.id.index,R.id.name});
-        BookListAdapter adapter = new BookListAdapter(ListActivity.this, data, possion);
         lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
-        lv.setAdapter(adapter);
-        //Toast.makeText(getApplicationContext(),"还有"+(data.size()-possion)+"章未读",Toast.LENGTH_LONG).show();
         lv.setSelection(possion - 1);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -207,14 +136,16 @@ public class ListActivity extends Activity {
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
                 // TODO: Implement this method
                 try {
-                    Intent i = new Intent(ListActivity.this, ReadActivity.class);
-                    i.putExtra("url", data.get(p3).get("url"));
-                    i.putExtra("index", data.get(p3).get("index"));
-                    i.putExtra("bookid", _BookId);
+                    Intent i = new Intent(ListActivity.this, BookContentActivity.class);
+                    i.putExtra("data", chapters);
+                    i.putExtra("book", book);
+                    i.putExtra("index", p3 + 1);
+
                     //Toast.makeText(ListActivity.this,data.get(p3).get("url"),1).show();
                     startActivity(i);
-                }catch (Exception e){
-                    mHander.obtainMessage(0,e.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mHander.obtainMessage(0, e.getMessage()).sendToTarget();
                 }
             }
         });
@@ -230,12 +161,14 @@ public class ListActivity extends Activity {
             switch (p1.what) {
                 case 0:
                     String msg = (String) p1.obj;
+                    //System.err.println(msg);
+                    //tv.setText(msg);
                     Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
 
                     break;
                 case 1:
-                    JSONArray ss = (JSONArray) p1.obj;
-                    array = ss;
+                    ChaptersBean ss = (ChaptersBean) p1.obj;
+
                     showList(ss);
 
                     break;

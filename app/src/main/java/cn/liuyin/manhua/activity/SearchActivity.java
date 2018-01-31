@@ -1,38 +1,62 @@
 package cn.liuyin.manhua.activity;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import cn.liuyin.manhua.R;
+import cn.liuyin.manhua.adapter.SearchAdapter;
+import cn.liuyin.manhua.data.bean.SearchReslt;
+import cn.liuyin.manhua.data.tool.Book;
+import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.HttpTool;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends BaseActivity {
     EditText et;
     Button btn;
     ListView lv;
+    private Handler mHander = new Handler(new Handler.Callback() {
+
+        @Override
+        public boolean handleMessage(Message p1) {
+            switch (p1.what) {
+                case 0:
+                    String msg = (String) p1.obj;
+                    //tv.setText(msg);
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+
+                    break;
+                case 1:
+                    SearchReslt ss = (SearchReslt) p1.obj;
+                    showList(ss);
+                    break;
+                case 2:
+                    //ss=(String) p1.obj;
+                    //Toast.makeText(MainActivity.this,ss,1).show();
+                    break;
+
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +98,14 @@ public class SearchActivity extends Activity {
 
     }
 
-//    public void showEnptyView() {
-//        TextView emptyView = new TextView(this);
-//        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-//        emptyView.setText("对不起，没有找到哭∏_∏");
-//        emptyView.setVisibility(View.GONE);
-//        ((ViewGroup) lv.getParent()).addView(emptyView);
-//        lv.setEmptyView(emptyView);
-//    }
-
+    public void showEnptyView() {
+        TextView emptyView = new TextView(this);
+        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        emptyView.setText("对不起，没有找到哭∏_∏");
+        emptyView.setVisibility(View.GONE);
+        ((ViewGroup) lv.getParent()).addView(emptyView);
+        lv.setEmptyView(emptyView);
+    }
 
     public void search(final String kw) {
         new Thread(new Runnable() {
@@ -106,22 +129,23 @@ public class SearchActivity extends Activity {
                     String d = HttpTool.httpGet(url);
                     if (d.startsWith("error:")) {
                         mHander.obtainMessage(0, d).sendToTarget();
-                    }
-                    else {
+                    } else {
                         Document doc = Jsoup.parse(d, url);
+                        //FileTool.writeFile("doc.html",doc.html());
                         Elements lists = doc.select(".cont-list").select("li");
                         mHander.obtainMessage(0, "搜索到" + lists.size() + "条结果").sendToTarget();
-                        JSONArray data = new JSONArray();
+                        SearchReslt data = new SearchReslt();
                         for (Element item : lists) {
-                            JSONObject temp = new JSONObject();
-                            temp.put("link", item.select("a").attr("abs:href"));
-                            temp.put("name", item.select("h3").text());
-                            temp.put("img", item.select("img").attr("data-src"));
-                            temp.put("author", item.select("dd").get(0).text());
-                            temp.put("type", item.select("dd").get(1).text());
-                            temp.put("new", item.select("dd").get(2).text());
-                            temp.put("time", item.select("dd").get(3).text());
-                            data.put(temp);
+                            Book temp = new Book();
+
+                            temp.link = item.select("a").attr("abs:href") + "/";
+                            temp.name = item.select("h3").text();
+                            temp.img = item.select("img").attr("data-src");
+                            temp.author = item.select("dd").get(0).text();
+                            temp.type = item.select("dd").get(1).text();
+                            temp.newChapter = item.select("dd").get(2).text();
+                            temp.updateTime = item.select("dd").get(3).text();
+                            data.add(temp);
                         }
 
                         //FileTool.writeFile("update.html",doc.toString());
@@ -134,64 +158,33 @@ public class SearchActivity extends Activity {
         }).start();
     }
 
-    private void showList(JSONArray array) {
+    private void showList(final SearchReslt data) {
 
-        final ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                JSONObject temp = array.getJSONObject(i);
-                map.put("link", temp.getString("link") + "/");
-                map.put("name", temp.getString("name"));
-                map.put("author", temp.getString("author"));
-                map.put("new", temp.getString("new"));
-                map.put("time", temp.getString("time"));
-                data.add(map);
-            } catch (JSONException e) {
-                mHander.obtainMessage(0, e.getMessage()).sendToTarget();
-            }
-        }
-        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, R.layout.book_item,
-                new String[]{"author", "name", "new", "time"},
-                new int[]{R.id.author, R.id.name, R.id.new_c, R.id.time});
+        SearchAdapter adapter = new SearchAdapter(this, data);
 
+        lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
         lv.setAdapter(adapter);
+        Toast.makeText(getApplicationContext(), "共有" + (data.results.size()) + "条结果", Toast.LENGTH_LONG).show();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
+
                 // TODO: Implement this method
-                Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                i.putExtra("url", data.get(p3).get("link"));
-                Toast.makeText(getApplicationContext(), data.get(p3).get("link"), Toast.LENGTH_SHORT).show();
-                startActivity(i);
+                try {
+                    BookShelf.addBook(data.results.get(p3));
+                    Intent i = new Intent(getApplicationContext(), ListActivity.class);
+                    i.putExtra("url", data.results.get(p3).link);
+                    i.putExtra("book", data.results.get(p3));
+                    //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
+                    startActivity(i);
+                } catch (Exception e) {
+                    mHander.obtainMessage(0, e.getMessage()).sendToTarget();
+                }
             }
         });
+
+
     }
-
-    private Handler mHander = new Handler(new Handler.Callback() {
-
-        @Override
-        public boolean handleMessage(Message p1) {
-            switch (p1.what) {
-                case 0:
-                    String msg = (String) p1.obj;
-                    //tv.setText(msg);
-                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-
-                    break;
-                case 1:
-                    JSONArray ss = (JSONArray) p1.obj;
-                    showList(ss);
-                    break;
-                case 2:
-                    //ss=(String) p1.obj;
-                    //Toast.makeText(MainActivity.this,ss,1).show();
-                    break;
-
-            }
-            return false;
-        }
-    });
 
 }
