@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import cn.liuyin.manhua.data.tool.Book;
 
-public class SearchReslt implements Serializable {
+public class SearchResult implements Serializable {
     public ArrayList<Book> results;
 
-    public SearchReslt() {
+    public SearchResult() {
         results = new ArrayList<>();
     }
 

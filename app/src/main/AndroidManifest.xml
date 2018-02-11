@@ -37,10 +37,6 @@
             android:name=".activity.SearchActivity"
             android:label="搜索" />
 
-        <provider
-            android:name="com.squareup.picasso.PicassoProvider"
-            android:authorities="${applicationId}.com.squareup.picasso"
-            android:exported="false" />
 
     </application>
 

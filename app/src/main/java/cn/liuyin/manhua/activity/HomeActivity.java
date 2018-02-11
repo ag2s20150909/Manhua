@@ -2,7 +2,6 @@ package cn.liuyin.manhua.activity;
 
 
 
-import android.app.Activity;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -31,17 +30,16 @@ import org.jsoup.select.Elements;
 import cn.liuyin.manhua.R;
 
 import cn.liuyin.manhua.adapter.SearchAdapter;
-import cn.liuyin.manhua.data.bean.SearchReslt;
+import cn.liuyin.manhua.data.bean.SearchResult;
 import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
-import cn.liuyin.manhua.tool.FileTool;
+
 import cn.liuyin.manhua.tool.HttpTool;
 import cn.liuyin.manhua.tool.UItool;
 
 public class HomeActivity extends BaseActivity {
 
 
-    String cmd = "Du7JUm25x4";
     String update = "http://m.pufei.net/manhua/update.html";
     String paihang = "http://m.pufei.net/manhua/paihang.html";
     String rexue = "http://m.pufei.net/shaonianrexue/";
@@ -61,7 +59,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: Implement this method
+
         gson = new Gson();
         super.onCreate(savedInstanceState);
         LinearLayout l = new LinearLayout(this);
@@ -102,14 +100,9 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
-        // TODO: Implement this method
+
         super.onStart();
 
-        //BookShelf.sortByTime();
-        //初始化书架
-
-
-        //ComonTool.copy2System(this,cmd);
     }
 
     public void test() {
@@ -118,12 +111,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void run() {
 
-                //BookShelf.sortByTime();
-                // TODO: Implement this method
-                //API api=new API(HomeActivity.this);
 
-                //FileTool.writeFile("types.json",gson.toJson(api.search("女",1,50),SearchBean.class));
-                //FileTool.writeFile("types.json",api.getTypes());
             }
         }).start();
     }
@@ -134,9 +122,8 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
-                    //HttpTool.search1(getApplicationContext(), "狐");
 
                     String d= HttpTool.httpGet(url);
                     if (d.startsWith("error:")){
@@ -153,7 +140,7 @@ public class HomeActivity extends BaseActivity {
 
                         lists = doc.select(".allList").select("li");
                     }
-                    SearchReslt data = new SearchReslt();
+                    SearchResult data = new SearchResult();
                     for (Element item : lists) {
                         Book temp = new Book();
                         String nurl = item.select("a.red").attr("abs:href");
@@ -188,9 +175,8 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
-                    //HttpTool.search1(getApplicationContext(), "狐");
                     HttpTool.httpGet("http:m.pufei.net");
                     String d= HttpTool.httpGet(url);
                     if (d.startsWith("error:")){
@@ -200,7 +186,7 @@ public class HomeActivity extends BaseActivity {
                     Document doc = Jsoup.parse(d,url);
 
                     Elements lists = doc.select(".cont-list").select("li");
-                    SearchReslt data = new SearchReslt();
+                    SearchResult data = new SearchResult();
                     for (Element item : lists) {
                         Book temp = new Book();
                         temp.link = item.select("a").attr("abs:href");
@@ -212,10 +198,6 @@ public class HomeActivity extends BaseActivity {
                         temp.updateTime = item.select("dd").get(3).text();
                         data.add(temp);
                     }
-                    FileTool.writeFile("mobile.html", gson.toJson(data, SearchReslt.class));
-
-                    //FileTool.writeFile("update.html", doc.toString());
-                    //FileTool.writeFile("pc.json", data.toString(4));
                     mHander.obtainMessage(1, data).sendToTarget();
                 } catch (Exception e) {
                     mHander.obtainMessage(0, "error" + e).sendToTarget();
@@ -225,7 +207,7 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-    private void showList(final SearchReslt data) {
+    private void showList(final SearchResult data) {
 
         SearchAdapter adapter = new SearchAdapter(this, data);
 
@@ -237,7 +219,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
 
-                // TODO: Implement this method
+
                 try {
                     BookShelf.addBook(data.results.get(p3));
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);
@@ -267,7 +249,7 @@ public class HomeActivity extends BaseActivity {
 
                     break;
                 case 1:
-                    SearchReslt ss = (SearchReslt) p1.obj;
+                    SearchResult ss = (SearchResult) p1.obj;
                     showList(ss);
                     break;
                 case 2:

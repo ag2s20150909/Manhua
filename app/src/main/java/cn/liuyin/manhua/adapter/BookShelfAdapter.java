@@ -1,6 +1,7 @@
 package cn.liuyin.manhua.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,13 @@ import cn.liuyin.manhua.data.tool.BookShelf;
 
 
 public class BookShelfAdapter extends BaseAdapter {
-    Context mContext;
+    private Context mContext;
 
-    BookShelf mDatas;
+    private BookShelf mDatas;
 
     public BookShelfAdapter(Context context, BookShelf datas) {
         this.mContext = context;
         this.mDatas = datas;
-        //this.mIndex=index;
     }
 
     public void updateView(BookShelf data) {
@@ -31,26 +31,26 @@ public class BookShelfAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO: Implement this method
+
         return mDatas.books.size();
     }
 
     @Override
     public Object getItem(int p1) {
-        // TODO: Implement this method
         return mDatas.books.get(p1);
     }
 
     @Override
     public long getItemId(int p1) {
-        // TODO: Implement this method
+
         return p1;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Book book = mDatas.books.get(position);
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
 
             convertView = LayoutInflater.from(mContext).inflate(
@@ -66,7 +66,7 @@ public class BookShelfAdapter extends BaseAdapter {
 
         }
         int unread = book.count - book.index;
-        viewHolder.tv_unread.setText(unread + "");
+        viewHolder.tv_unread.setText(String.valueOf(unread));
         viewHolder.tv_name.setText(book.name);
 
         if (unread > 0) {
@@ -87,11 +87,8 @@ public class BookShelfAdapter extends BaseAdapter {
      * @author zhenyun
      */
     public class ViewHolder {
-
-        public TextView tv_unread;
-        public TextView tv_name;
-
-
+        TextView tv_unread;
+        TextView tv_name;
     }
 
 

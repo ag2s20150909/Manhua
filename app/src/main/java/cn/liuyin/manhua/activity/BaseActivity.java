@@ -1,12 +1,14 @@
 package cn.liuyin.manhua.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+@SuppressLint("Registered")
 public class BaseActivity extends Activity {
     private final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
 

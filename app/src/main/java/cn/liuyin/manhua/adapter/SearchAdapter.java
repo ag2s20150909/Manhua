@@ -1,6 +1,7 @@
 package cn.liuyin.manhua.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +10,15 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import cn.liuyin.manhua.R;
-import cn.liuyin.manhua.data.bean.SearchReslt;
+import cn.liuyin.manhua.data.bean.SearchResult;
 import cn.liuyin.manhua.data.tool.Book;
 
 public class SearchAdapter extends BaseAdapter {
 
-    SearchReslt mData;
-    Context mContext;
+    private SearchResult mData;
+    private Context mContext;
 
-    public SearchAdapter(Context context, SearchReslt data) {
+    public SearchAdapter(Context context, SearchResult data) {
         this.mData = data;
         this.mContext = context;
     }
@@ -25,26 +26,27 @@ public class SearchAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO: Implement this method
+
         return mData.results.size();
     }
 
     @Override
     public Object getItem(int p1) {
-        // TODO: Implement this method
+
         return mData.results.get(p1);
     }
 
     @Override
     public long getItemId(int p1) {
-        // TODO: Implement this method
+
         return p1;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Book book = mData.results.get(position);
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
 
             convertView = LayoutInflater.from(mContext).inflate(
@@ -81,10 +83,10 @@ public class SearchAdapter extends BaseAdapter {
      * @author zhenyun
      */
     public class ViewHolder {
-        public TextView tv_name;
-        public TextView tv_author;
-        public TextView tv_new;
-        public TextView tv_time;
+        TextView tv_name;
+        TextView tv_author;
+        TextView tv_new;
+        TextView tv_time;
 
 
     }

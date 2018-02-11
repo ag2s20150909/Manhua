@@ -1,6 +1,5 @@
 package cn.liuyin.manhua.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookShelfAdapter;
-import cn.liuyin.manhua.data.bean.ChaptersBean;
 import cn.liuyin.manhua.data.tool.BookMaker;
 import cn.liuyin.manhua.data.tool.BookShelf;
 
@@ -31,7 +29,7 @@ public class BookShelfActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: Implement this method
+
         super.onCreate(savedInstanceState);
 
         lv = new ListView(this);
@@ -45,38 +43,37 @@ public class BookShelfActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
-        // TODO: Implement this method
+
         super.onStart();
-        BookShelf.sortBooks();
+        //BookShelf.sortBooks();
         bookshelf = BookShelf.getBookShelf();
         showList(bookshelf, false);
     }
 
     @Override
     protected void onRestart() {
-        // TODO: Implement this method
         super.onRestart();
 
     }
 
 
-    public void ChackUpdate() {
+    public void CheckUpdate() {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
 
 
                     for (int i = 0; i < bookshelf.books.size(); i++) {
 
-                        ChaptersBean chapter = BookMaker.getList(BookShelfActivity.this, bookshelf.books.get(i));
+                        BookMaker.getList(BookShelfActivity.this, bookshelf.books.get(i));
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
-                                // TODO: Implement this method
+
                                 bookshelf = BookShelf.getBookShelf();
                                 adapter.updateView(bookshelf);
                             }
@@ -131,7 +128,7 @@ public class BookShelfActivity extends BaseActivity {
 
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
-                // TODO: Implement this method
+
                 try {
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);
                     i.putExtra("url", data.books.get(p3).link);
@@ -149,7 +146,6 @@ public class BookShelfActivity extends BaseActivity {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4) {
-                // TODO: Implement this method
                 showSS(p3);
                 return true;
             }
@@ -169,7 +165,6 @@ public class BookShelfActivity extends BaseActivity {
 
             @Override
             public void onClick(DialogInterface p1, int p2) {
-                // TODO: Implement this method
                 Toast.makeText(getApplicationContext(), bookshelf.books.get(index).bookid + "", Toast.LENGTH_SHORT).show();
                 switch (p2) {
                     case 3:
@@ -193,7 +188,7 @@ public class BookShelfActivity extends BaseActivity {
                         bookshelf = BookShelf.MoveTopByIndex(index);
                         break;
                     case 4:
-                        ChackUpdate();
+                        CheckUpdate();
                         break;
                     case 5:
                         bookshelf = BookShelf.sortBooksByUpdate();

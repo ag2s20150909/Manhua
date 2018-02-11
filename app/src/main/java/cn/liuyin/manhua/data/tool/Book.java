@@ -20,10 +20,9 @@ public class Book implements Serializable
     public int index = 1;
 
 
+    @Override
     public Book clone() {
-        String json = toJson();
-        Book b = fromJson(json);
-        return b;
+        return fromJson(toJson());
     }
 
 

@@ -10,7 +10,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 import cn.liuyin.manhua.tool.FileTool;
-import cn.liuyin.manhua.tool.HttpTool;
 import okhttp3.OkHttpClient;
 
 /**
@@ -38,7 +37,6 @@ public class APP extends Application {
         OkHttp3Downloader okHttp3Downloader = new OkHttp3Downloader(client);
         Picasso.Builder picassoBuilder = new Picasso.Builder(mContext);
         picassoBuilder.downloader(okHttp3Downloader).build();
-        long maxSize = 1024 * 1024 * 100;
         Picasso picasso = picassoBuilder.build();
         Picasso.setSingletonInstance(picasso);
 

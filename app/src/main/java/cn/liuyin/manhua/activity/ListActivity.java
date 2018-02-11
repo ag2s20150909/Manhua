@@ -56,7 +56,7 @@ public class ListActivity extends BaseActivity {
 
     @Override
     protected void onRestart() {
-        // TODO: Implement this method
+
         super.onRestart();
         if (FileTool.has("bid", book.bookid + ".json")) {
             data = BookMaker.getCatcheList(book);
@@ -76,14 +76,14 @@ public class ListActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        // TODO: Implement this method
+
         super.onStop();
         //System.gc();
     }
 
     @Override
     protected void onDestroy() {
-        // TODO: Implement this method
+
         super.onDestroy();
 
     }
@@ -94,7 +94,7 @@ public class ListActivity extends BaseActivity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
 
                     ChaptersBean data = BookMaker.getList(ListActivity.this, book);
@@ -117,9 +117,9 @@ public class ListActivity extends BaseActivity {
             return;
         }
 
-        int possion = 1;
+        int possion;
         book = BookShelf.getBookById(book.bookid);
-        possion = book.index;
+        possion = book != null ? book.index : 1;
         if (adapter == null) {
             adapter = new BookListAdapter(ListActivity.this, chapters, possion);
             //lv.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.list_animation), 0.5f));
@@ -134,7 +134,7 @@ public class ListActivity extends BaseActivity {
 
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
-                // TODO: Implement this method
+
                 try {
                     Intent i = new Intent(ListActivity.this, BookContentActivity.class);
                     i.putExtra("data", chapters);

@@ -1,6 +1,6 @@
 package cn.liuyin.manhua.activity;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,9 +16,9 @@ import com.google.gson.Gson;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookContentAdapter;
-import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.bean.ChaptersBean;
 import cn.liuyin.manhua.data.bean.ContentBean;
+import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookMaker;
 import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.FileTool;
@@ -62,8 +62,7 @@ public class BookContentActivity extends BaseActivity {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4) {
-                // TODO: Implement this method
-                adapter.doOnLongClick(lv, p3);
+                adapter.doOnLongClick(p3);
                 return true;
             }
         });
@@ -76,7 +75,6 @@ public class BookContentActivity extends BaseActivity {
 
             @Override
             public void onOverScrollUp() {
-                // TODO: Implement this method
                 if (index > 1) {
                     index--;
                     getData(index);
@@ -88,7 +86,6 @@ public class BookContentActivity extends BaseActivity {
 
             @Override
             public void onOverScrollDown() {
-                // TODO: Implement this method
                 if (index < chapters.data.list.size()) {
                     index++;
                     getData(index);
@@ -105,7 +102,6 @@ public class BookContentActivity extends BaseActivity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
                 try {
 
                     Gson gson = new Gson();

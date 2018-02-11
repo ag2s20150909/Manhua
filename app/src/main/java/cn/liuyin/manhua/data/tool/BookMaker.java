@@ -39,8 +39,7 @@ public class BookMaker {
     public static ChaptersBean getCatcheList(Book book) {
         Gson gson = new Gson();
         if (FileTool.has("bid", book.bookid + ".json")) {
-            ChaptersBean data = gson.fromJson(FileTool.readFile("bid", book.bookid + ".json"), ChaptersBean.class);
-            return data;
+            return gson.fromJson(FileTool.readFile("bid", book.bookid + ".json"), ChaptersBean.class);
         } else {
             return null;
         }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -24,7 +22,7 @@ import org.jsoup.select.Elements;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.SearchAdapter;
-import cn.liuyin.manhua.data.bean.SearchReslt;
+import cn.liuyin.manhua.data.bean.SearchResult;
 import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.HttpTool;
@@ -45,7 +43,7 @@ public class SearchActivity extends BaseActivity {
 
                     break;
                 case 1:
-                    SearchReslt ss = (SearchReslt) p1.obj;
+                    SearchResult ss = (SearchResult) p1.obj;
                     showList(ss);
                     break;
                 case 2:
@@ -60,7 +58,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: Implement this method
+
         super.onCreate(savedInstanceState);
         LinearLayout.LayoutParams hp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams ep = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -98,14 +96,6 @@ public class SearchActivity extends BaseActivity {
 
     }
 
-    public void showEnptyView() {
-        TextView emptyView = new TextView(this);
-        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        emptyView.setText("对不起，没有找到哭∏_∏");
-        emptyView.setVisibility(View.GONE);
-        ((ViewGroup) lv.getParent()).addView(emptyView);
-        lv.setEmptyView(emptyView);
-    }
 
     public void search(final String kw) {
         new Thread(new Runnable() {
@@ -124,7 +114,7 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void run() {
-                // TODO: Implement this method
+
                 try {
                     String d = HttpTool.httpGet(url);
                     if (d.startsWith("error:")) {
@@ -134,7 +124,7 @@ public class SearchActivity extends BaseActivity {
                         //FileTool.writeFile("doc.html",doc.html());
                         Elements lists = doc.select(".cont-list").select("li");
                         mHander.obtainMessage(0, "搜索到" + lists.size() + "条结果").sendToTarget();
-                        SearchReslt data = new SearchReslt();
+                        SearchResult data = new SearchResult();
                         for (Element item : lists) {
                             Book temp = new Book();
 
@@ -158,7 +148,7 @@ public class SearchActivity extends BaseActivity {
         }).start();
     }
 
-    private void showList(final SearchReslt data) {
+    private void showList(final SearchResult data) {
 
         SearchAdapter adapter = new SearchAdapter(this, data);
 
@@ -170,7 +160,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
 
-                // TODO: Implement this method
+
                 try {
                     BookShelf.addBook(data.results.get(p3));
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);

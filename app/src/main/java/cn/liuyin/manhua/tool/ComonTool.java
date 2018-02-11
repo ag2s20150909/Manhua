@@ -1,7 +1,6 @@
 package cn.liuyin.manhua.tool;
 
 
-import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;

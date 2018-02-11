@@ -17,20 +17,19 @@ public class APIheper {
 
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
         Object localObject2 = new TreeMap();
-        FormBody.Builder params = builder;
-        params.add("uid", "0");
-        params.add("channel_id", "6192");
-        params.add("app_version", "1.0.0");
-        params.add("timestamp", System.currentTimeMillis() + "");
-        params.add("platform", "Android");
-        params.add("device_id", ComonTool.getMD5String("Android"));
-        params.add("token", "");
+        builder.add("uid", "0");
+        builder.add("channel_id", "6192");
+        builder.add("app_version", "1.0.0");
+        builder.add("timestamp", System.currentTimeMillis() + "");
+        builder.add("platform", "Android");
+        builder.add("device_id", ComonTool.getMD5String("Android"));
+        builder.add("token", "");
         int i = 0;
-        while (i < params.build().size()) {
-            ((Map) localObject2).put(params.build().encodedName(i).toLowerCase(), params.build().encodedValue(i));
+        while (i < builder.build().size()) {
+            ((Map) localObject2).put(builder.build().encodedName(i).toLowerCase(), builder.build().encodedValue(i));
             i += 1;
         }
-        params.add("sign", getSign(localObject2));
-        return params;
+        builder.add("sign", getSign(localObject2));
+        return builder;
     }
 }

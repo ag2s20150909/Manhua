@@ -24,7 +24,6 @@ public class BookShelf implements Serializable {
         Comparator c = new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                // TODO Auto-generated method stub
                 if (o1.count - o1.index > o2.count - o2.index)
                     return 1;
                     //注意！！返回值必须是一对相反数，否则无效。jdk1.7以后就是这样。
@@ -43,7 +42,6 @@ public class BookShelf implements Serializable {
         Comparator c = new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                // TODO Auto-generated method stub
                 if (o1.count - o1.index < o2.count - o2.index)
                     return 1;
                     //注意！！返回值必须是一对相反数，否则无效。jdk1.7以后就是这样。
@@ -62,7 +60,6 @@ public class BookShelf implements Serializable {
         Comparator c = new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                // TODO Auto-generated method stub
                 if (o1.lastRead < o2.lastRead)
                     return 1;
                     //注意！！返回值必须是一对相反数，否则无效。jdk1.7以后就是这样。
@@ -81,7 +78,6 @@ public class BookShelf implements Serializable {
         Comparator c = new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                // TODO Auto-generated method stub
                 if (o1.lastUpdateTime < o2.lastUpdateTime)
                     return 1;
                     //注意！！返回值必须是一对相反数，否则无效。jdk1.7以后就是这样。
