@@ -1,0 +1,65 @@
+{
+  "data": {
+    "items": [
+      {
+        "classId": 638,
+        "className": "少女",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/sn_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/sn_zmh_icon@3x.png"
+      },
+      {
+        "classId": 639,
+        "className": "武侠",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/wx_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/wx_zmh_icon@3x.png"
+      },
+      {
+        "classId": 644,
+        "className": "恐怖",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/kb_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/kb_zmh_icon@3x.png"
+      },
+      {
+        "classId": 637,
+        "className": "热血",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/rx_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/rx_zmh_icon@3x.png"
+      },
+      {
+        "classId": 642,
+        "className": "搞笑",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/gx_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/gx_zmh_icon@3x.png"
+      },
+      {
+        "classId": 645,
+        "className": "耽美",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/dm_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/dm_zmh_icon@3x.png"
+      },
+      {
+        "classId": 640,
+        "className": "科幻",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/kh_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/kh_zmh_icon@3x.png"
+      },
+      {
+        "classId": 643,
+        "className": "侦探",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/zt_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/zt_zmh_icon@3x.png"
+      },
+      {
+        "classId": 641,
+        "className": "竞技",
+        "image": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/jj_zmh_icon@2x.png",
+        "image_m": "http:\/\/t.pufei.net\/layout\/res\/mobsite\/static\/img\/category\/jj_zmh_icon@3x.png"
+      }
+    ]
+  },
+  "success": true,
+  "token": "46b1bf9f6b24c361a55f21b49ba66000,0,1521475731121",
+  "message": "操作成功",
+  "code": 0,
+  "version": "1.0.0"
+}

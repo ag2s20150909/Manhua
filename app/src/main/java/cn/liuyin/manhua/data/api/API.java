@@ -36,6 +36,125 @@ public class API {
     }
 
 
+    //点赞
+    public String dianzan(int score) {
+
+        FormBody.Builder buider = new FormBody.Builder();
+        buider.add("score", score + "");
+
+        FormBody formBody = buider.build();
+        String url = "http://dianzan.myqcloud.com" + "/rank.php";
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+
+    public String getRanking(String type, int page, int pageSize) {
+
+        //rankType=newOnline&page=1
+        FormBody.Builder buider = new FormBody.Builder();
+        buider.add("rankType", type);
+        buider.add("page", page + "");
+        buider.add("pageSize", pageSize + "");
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/book/ranking";
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+
+    public String getCategory() {
+        //&pageSize=20&keyword
+        FormBody.Builder buider = new FormBody.Builder();
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/book/category";
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+
+    public String getCateDetail(int class_id, int page, int pageSize) {
+        //POST /api/book/cate-detail HTTP/1.1
+        //&pageSize=20&sortType=popu&page=1&classId=638
+        //sortType popu,update
+        FormBody.Builder buider = new FormBody.Builder();
+        buider.add("classId", class_id + "");
+        buider.add("sortType", "popu");
+        buider.add("page", page + "");
+        buider.add("pageSize", pageSize + "");
+
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/book/cate-detail";
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+
+    public String getRecom() {
+        //&pageSize=20&keyword
+        FormBody.Builder buider = new FormBody.Builder();
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/recom/index";
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+
     ///api/book/contents
     public String getContents(String bid, String cid) {
         //&bid=320&sortType=ASC
@@ -85,6 +204,31 @@ public class API {
 
     }
 
+    public String search_1(String kw, int page, int pageSize) {
+        //POST /api/book/search HTTP/1.1
+
+
+        //&pageSize=20&keyword
+        FormBody.Builder buider = new FormBody.Builder();
+        buider.add("keyword", kw);
+        buider.add("page", page + "");
+        buider.add("pageSize", pageSize + "");
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+
+        String url = host + "/api/book/search";
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(response.body().string()).toString();
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            return "error:" + e.getMessage();
+        }
+
+    }
 
     public String search(String bookid, int page) {
         //&pageSize=20&keyword

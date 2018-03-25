@@ -1,13 +1,10 @@
 package cn.liuyin.manhua.activity;
 
 
-
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -15,44 +12,22 @@ import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import android.widget.Toast;
-
 
 import com.google.gson.Gson;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-
 import cn.liuyin.manhua.R;
-
+import cn.liuyin.manhua.adapter.HomeAdapter;
 import cn.liuyin.manhua.adapter.SearchAdapter;
+import cn.liuyin.manhua.data.api.API;
+import cn.liuyin.manhua.data.bean.ClassListBean;
+import cn.liuyin.manhua.data.bean.RankingBean;
 import cn.liuyin.manhua.data.bean.SearchResult;
-import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
-
-import cn.liuyin.manhua.tool.HttpTool;
-import cn.liuyin.manhua.tool.UItool;
+import cn.liuyin.manhua.tool.FileTool;
 
 public class HomeActivity extends BaseActivity {
 
-
-    String update = "http://m.pufei.net/manhua/update.html";
-    String paihang = "http://m.pufei.net/manhua/paihang.html";
-    String rexue = "http://m.pufei.net/shaonianrexue/";
-    String shaonvaiqing = "http://m.pufei.net/shaonvaiqing/";
-    String wuxiagedou = "http://m.pufei.net/wuxiagedou/";
-    String kehuan = "http://m.pufei.net/kehuan/";
-    String jingjitiyu = "http://m.pufei.net/jingjitiyu/";
-    String gaoxiaoxiju = "http://m.pufei.net/gaoxiaoxiju/";
-    String danmeirensheng = "http://m.pufei.net/danmeirensheng/";
-    String zhentantuili = "http://m.pufei.net/zhentantuili/";
-    String kongbulingyi = "http://m.pufei.net/kongbulingyi/";
-    String PClianzai = "http://www.pufei.net/manhua/lianzai.html";
-    String PCupdate = "http://www.pufei.net/manhua/update.html";
 
     Gson gson;
     ListView lv;
@@ -68,32 +43,20 @@ public class HomeActivity extends BaseActivity {
         HorizontalScrollView hs = new HorizontalScrollView(this);
         LinearLayout lz = new LinearLayout(this);
         lv = new ListView(this);
-        UItool ui = new UItool(lz, new myonclick())
-                .addButton("书架")
-                .addButton("搜索")
-                .addButton("今日更新")
-                .addButton("漫画排行")
-                .addButton("少年热血")
-                .addButton("少女爱情")
-                .addButton("武侠格斗")
-                .addButton("科幻魔幻")
-                .addButton("竞技体育")
-                .addButton("搞笑喜剧")
-                .addButton("耽美BL")
-                .addButton("推理侦探")
-                .addButton("恐怖灵异")
-                .addButton("最近更新")
-                .addButton("连载大全");
+        try {
 
-        ui.Build();
+            HomeAdapter ui = new HomeAdapter(lz, this);
+            ui.Build();
+        } catch (Exception e) {
+            FileTool.writeError(e);
+        }
 
         hs.addView(lz);
         l.addView(hs);
         l.addView(lv);
 
         setContentView(l);
-        getHtml(update);
-        test();
+        getNew();
 
     }
 
@@ -116,92 +79,48 @@ public class HomeActivity extends BaseActivity {
         }).start();
     }
 
-
-    public void getPcHtml(final String url) {
+    public void getNew() {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
+                API api = new API();
 
                 try {
 
-                    String d= HttpTool.httpGet(url);
-                    if (d.startsWith("error:")){
-                        mHander.obtainMessage(0,d).sendToTarget();
-                        return;
-                    }
-                    Document doc = Jsoup.parse(d,url);
-                    doc.setBaseUri(update);
-                    //allList
-                    Elements lists;
-                    if (url.endsWith("update.html")) {
-                        lists = doc.select(".updateList").select("li");
-                    } else {
-
-                        lists = doc.select(".allList").select("li");
-                    }
-                    SearchResult data = new SearchResult();
-                    for (Element item : lists) {
-                        Book temp = new Book();
-                        String nurl = item.select("a.red").attr("abs:href");
-                        temp.link = nurl.substring(0, nurl.lastIndexOf("/") + 1);
-                        temp.name = item.select("a.video").text();
-                        temp.img = "";
-                        temp.author = "";
-                        temp.type = "";
-                        temp.newChapter = item.select("a.red").text();
-                        if (url.endsWith("update.html")) {
-                            temp.updateTime = item.select("span.red").text();
-                        } else {
-                            temp.updateTime = "时间未知";
-                        }
-                        data.add(temp);
-                    }
-
-
-                    mHander.obtainMessage(1, data).sendToTarget();
+                    SearchResult d = new SearchResult();
+                    RankingBean data = gson.fromJson(api.getRanking("newOnline", 1, 100), RankingBean.class);
+                    d.add(data);
+                    mHander.obtainMessage(1, d).sendToTarget();
 
                 } catch (Exception e) {
-                    mHander.obtainMessage(0, "error" + e).sendToTarget();
-
+                    FileTool.writeError(e);
+                    mHander.obtainMessage(0, e.getLocalizedMessage()).sendToTarget();
                 }
+
             }
         }).start();
     }
 
-
-    public void getHtml(final String url) {
+    public void getType(final int classId) {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
+                API api = new API();
 
                 try {
-                    HttpTool.httpGet("http:m.pufei.net");
-                    String d= HttpTool.httpGet(url);
-                    if (d.startsWith("error:")){
-                        mHander.obtainMessage(0,d).sendToTarget();
-                        return;
-                    }
-                    Document doc = Jsoup.parse(d,url);
 
-                    Elements lists = doc.select(".cont-list").select("li");
-                    SearchResult data = new SearchResult();
-                    for (Element item : lists) {
-                        Book temp = new Book();
-                        temp.link = item.select("a").attr("abs:href");
-                        temp.name = item.select("h3").text();
-                        temp.img = item.select("img").attr("data-src");
-                        temp.author = item.select("dd").get(0).text();
-                        temp.type = item.select("dd").get(1).text();
-                        temp.newChapter = item.select("dd").get(2).text();
-                        temp.updateTime = item.select("dd").get(3).text();
-                        data.add(temp);
-                    }
-                    mHander.obtainMessage(1, data).sendToTarget();
+                    SearchResult d = new SearchResult();
+                    ClassListBean data = gson.fromJson(api.getCateDetail(classId, 1, 100), ClassListBean.class);
+                    d.add(data);
+                    mHander.obtainMessage(1, d).sendToTarget();
+
                 } catch (Exception e) {
-                    mHander.obtainMessage(0, "error" + e).sendToTarget();
+                    FileTool.writeError(e);
+                    mHander.obtainMessage(0, e.getLocalizedMessage()).sendToTarget();
                 }
+
             }
         }).start();
     }
@@ -263,62 +182,4 @@ public class HomeActivity extends BaseActivity {
     });
 
 
-    class myonclick implements View.OnClickListener {
-
-        @Override
-        public void onClick(View p1) {
-            switch (p1.getId()) {
-                case 0:
-                    startActivity(new Intent(getApplicationContext(), BookShelfActivity.class));
-                    //Toast.makeText(getApplicationContext(), "该功能还没有完成😁", 1).show();
-                    break;
-                case 1:
-                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                    break;
-                case 2:
-                    getHtml(update);
-                    break;
-                case 3:
-                    getHtml(paihang);
-                    break;
-                case 4:
-                    getHtml(rexue);
-                    break;
-                case 5:
-                    getHtml(shaonvaiqing);
-                    break;
-                case 6:
-                    getHtml(wuxiagedou);
-                    break;
-                case 7:
-                    getHtml(kehuan);
-                    break;
-                case 8:
-                    getHtml(jingjitiyu);
-                    break;
-                case 9:
-                    getHtml(gaoxiaoxiju);
-                    break;
-                case 10:
-                    getHtml(danmeirensheng);
-                    break;
-                case 11:
-                    getHtml(zhentantuili);
-                    break;
-                case 12:
-                    getHtml(kongbulingyi);
-                    break;
-                case 13:
-                    getPcHtml(PCupdate);
-                    break;
-                case 14:
-                    getPcHtml(PClianzai);
-                    break;
-
-
-            }
-        }
-
-
-    }
 }

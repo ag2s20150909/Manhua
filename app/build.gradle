@@ -24,7 +24,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //An HTTP & HTTP/2 client for Android and Java applications.
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     // jsoup HTML parser library @ https://jsoup.org/
     implementation 'org.jsoup:jsoup:1.11.2'
     //Java implementation of a Disk-based LRU cache which specifically targets Android compatibility.
@@ -34,9 +34,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
-    implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
-
-    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.google.code.gson:gson:2.8.0'
 
 }

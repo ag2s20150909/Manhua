@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,6 +24,8 @@ import org.jsoup.select.Elements;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.SearchAdapter;
+import cn.liuyin.manhua.data.api.API;
+import cn.liuyin.manhua.data.bean.SearchBean;
 import cn.liuyin.manhua.data.bean.SearchResult;
 import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
@@ -96,18 +100,34 @@ public class SearchActivity extends BaseActivity {
 
     }
 
-
     public void search(final String kw) {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-
-                String u = HttpTool.search(getApplicationContext(), kw);
-                getHtml(u);
+                Gson gson = new Gson();
+                SearchResult data = new SearchResult();
+                SearchBean d = gson.fromJson(new API().search_1(kw, 1, 100), SearchBean.class);
+                data.add(d);
+                mHander.obtainMessage(1, data).sendToTarget();
+                // String u = HttpTool.search(getApplicationContext(), kw);
+                // getHtml(u);
             }
         }).start();
     }
+
+
+//    public void search(final String kw) {
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                String u = HttpTool.search(getApplicationContext(), kw);
+//                getHtml(u);
+//            }
+//        }).start();
+//    }
 
     public void getHtml(final String url) {
         new Thread(new Runnable() {

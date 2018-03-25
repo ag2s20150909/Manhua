@@ -15,6 +15,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import cn.liuyin.manhua.APP;
 
 public class FileTool {
 
@@ -107,6 +112,19 @@ public class FileTool {
         }
     }
 
+    public static String readAsset(String fileName) {
+        try {
+            InputStream is = APP.getContext().getAssets().open(fileName);
+            int lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            String result = new String(buffer, "utf8");
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static void writeFiles(String name, String filename, String content) {
         String path = BASEPATH + "/" + name;
         try {
@@ -168,6 +186,23 @@ public class FileTool {
             fw.close();
         } catch (IOException e) {
             //Toast.makeText(APP.getContext(),e.getMessage(),1).show();
+        }
+    }
+
+    public static void writeError(Exception e) {
+
+        writeError(getStackTrace(e));
+    }
+
+    public static String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        try {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        } finally {
+            pw.close();
         }
     }
 
