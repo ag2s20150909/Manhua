@@ -97,6 +97,7 @@ public class ListActivity extends BaseActivity {
 
                 try {
 
+
                     ChaptersBean data = BookMaker.getList(ListActivity.this, book);
                     mHander.obtainMessage(1, data).sendToTarget();
 
