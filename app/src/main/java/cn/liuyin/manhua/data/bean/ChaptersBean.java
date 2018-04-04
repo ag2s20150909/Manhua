@@ -47,7 +47,7 @@ public class ChaptersBean implements Serializable {
     public String version;
 
 
-    public ChaptersBean fromJson(String json) {
+    public static ChaptersBean fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, ChaptersBean.class);
     }

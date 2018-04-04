@@ -46,7 +46,7 @@ public class BookContentActivity extends BaseActivity {
             book = (Book) getIntent().getSerializableExtra("book");
             index = getIntent().getIntExtra("index", 1);
             lv = findViewById(R.id.activity_content_lv);
-
+            adapter = new BookContentAdapter(this, lv);
             tv = findViewById(R.id.activity_content_tv);
             getData(index);
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class BookContentActivity extends BaseActivity {
     }
 
     public void showData(final ContentBean data) {
-        adapter = new BookContentAdapter(this, data);
+        adapter.updateView(data, index);
         lv.setAdapter(adapter);
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 

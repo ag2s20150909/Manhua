@@ -6,36 +6,53 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.bean.ContentBean;
+import cn.liuyin.manhua.service.DownloadImgRunnable;
 import cn.liuyin.manhua.tool.FileTool;
+import cn.liuyin.manhua.tool.ScreenUtil;
 import cn.liuyin.manhua.tool.ShareUtils;
+import cn.liuyin.view.DampingListView;
 
 
 public class BookContentAdapter extends BaseAdapter {
+    private DampingListView mLv;
     private Context mContext;
     private ContentBean mData;
+    private int mIndex;
+    ExecutorService mThreadPool;
 
 
-    public BookContentAdapter(Context context, ContentBean data) {
-        this.mData = data;
+    public BookContentAdapter(Context context, DampingListView lv) {
         this.mContext = context;
+        this.mLv = lv;
+        this.mThreadPool = Executors.newFixedThreadPool(3);
+
     }
 
-//    public void updateView(ContentBean data) {
-//        this.mData = data;
-//        this.notifyDataSetChanged();
-//
-//    }
+
+    public void updateView(ContentBean data, int index) {
+        this.mData = data;
+        this.mIndex = index;
+        mThreadPool.execute(new DownloadImgRunnable(data, index));
+        this.notifyDataSetChanged();
+
+    }
+
 
     @Override
     public int getCount() {
@@ -75,8 +92,20 @@ public class BookContentAdapter extends BaseAdapter {
 
 
         }
+        String filename = mData.data.bookTitle + "/[" + mData.data.bookTitle + "][c" + mIndex + "][p" + data.order + "].jpg";
 
-        Picasso.get().load(data.img).placeholder(R.drawable.ic_loading).noFade().into(viewHolder.iv);
+        File file = new File(FileTool.BASEPATH + "/img", filename);
+        if (file.exists()) {
+
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            viewHolder.iv.setImageBitmap(bitmap);
+            //Picasso bug,不能读取本地图片 emmmmmmmmm.
+            //Picasso.get().load(file).placeholder(R.drawable.ic_loading).error(R.mipmap.ic_launcher).noFade().into(viewHolder.iv);
+
+        } else {
+            Picasso.get().load(data.img).placeholder(R.drawable.ic_loading).noFade().into(viewHolder.iv);
+        }
+
         return convertView;
     }
 
@@ -92,7 +121,7 @@ public class BookContentAdapter extends BaseAdapter {
 
     public void doOnLongClick(final int index) {
 
-        final String[] items = new String[]{"保存到相册", "分享给朋友"};
+        final String[] items = new String[]{"保存到相册", "分享给朋友", "分享长图"};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         // 设置参数
@@ -108,6 +137,9 @@ public class BookContentAdapter extends BaseAdapter {
                         //saveLongImg(lv);
                         shareBitmap(index);
                         //shareImg();
+                        break;
+                    case 2:
+                        saveList();
                         break;
 
                     default:
@@ -159,6 +191,15 @@ public class BookContentAdapter extends BaseAdapter {
                 }
             }
         }).start();
+    }
+
+    public void saveList() {
+        //Toast.makeText(mContext,"生成长图中，请稍等一会。",Toast.LENGTH_LONG).show();
+        Bitmap bitmap = ScreenUtil.shotListView(mLv);
+        String fileName = "long.JPG";
+        FileTool.saveBitmap(mContext, fileName, bitmap);
+        String shareTitle = mData.data.bookTitle + "_" + mData.data.title;
+        ShareUtils.shareImageWithTitle(mContext, fileName, shareTitle);
     }
 
 

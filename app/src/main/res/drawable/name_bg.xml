@@ -2,12 +2,12 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!-- 填充 -->
-    <solid android:color="#ff9d77" /> <!-- 定义填充的颜色值 -->
+    <solid android:color="#c7edcc" /> <!-- 定义填充的颜色值 -->
 
     <!-- 描边 -->
     <stroke
-        android:width="2dp"	
-        android:color="#fad3cf" /> <!-- 定义描边的宽度和描边的颜色值 -->
+        android:width="2dp"
+        android:color="#f0ffff" /> <!-- 定义描边的宽度和描边的颜色值 -->
 
 	<!-- 圆角 -->
     <corners

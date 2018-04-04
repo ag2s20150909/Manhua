@@ -12,6 +12,7 @@ import android.widget.TextView;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
+import cn.liuyin.manhua.data.tool.TimeTool;
 
 
 public class BookShelfAdapter extends BaseAdapter {
@@ -59,6 +60,7 @@ public class BookShelfAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.tv_unread = convertView.findViewById(R.id.unread);
             viewHolder.tv_name = convertView.findViewById(R.id.name);
+            viewHolder.tv_time = convertView.findViewById(R.id.time);
 
             convertView.setTag(viewHolder);
         } else {
@@ -68,6 +70,8 @@ public class BookShelfAdapter extends BaseAdapter {
         int unread = book.count - book.index;
         viewHolder.tv_unread.setText(String.valueOf(unread));
         viewHolder.tv_name.setText(book.name);
+        viewHolder.tv_time.setText(TimeTool.getTimeString(book.lastUpdateTime));
+
 
         if (unread > 0) {
             viewHolder.tv_unread.setBackgroundResource(R.drawable.rand_background_accent);
@@ -89,6 +93,8 @@ public class BookShelfAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView tv_unread;
         TextView tv_name;
+        TextView tv_time;
+
     }
 
 

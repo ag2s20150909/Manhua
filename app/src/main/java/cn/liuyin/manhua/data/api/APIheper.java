@@ -10,8 +10,7 @@ import okhttp3.FormBody;
 public class APIheper {
     public static String getSign(Object localObject2) {
         localObject2 = localObject2.toString();
-        String sign = ComonTool.getMD5String(ComonTool.getMD5String(ComonTool.getURLDecoderString(((String) localObject2).replaceAll(",", "&").replace("{", "").replace("}", "").replaceAll(" ", "") + "&key=PKwUJyO1GGraH7mDhClqWHExSPgGgcq")));
-        return sign;
+        return ComonTool.getMD5String(ComonTool.getMD5String(ComonTool.getURLDecoderString(((String) localObject2).replaceAll(",", "&").replace("{", "").replace("}", "").replaceAll(" ", "") + "&key=PKwUJyO1GGraH7mDhClqWHExSPgGgcq")));
     }
 
 

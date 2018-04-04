@@ -12,14 +12,13 @@ import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.SearchBean;
 import cn.liuyin.manhua.tool.FileTool;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class API {
     Context mContext;
-    OkHttpClient client;
-    private final String host = "http://client.pf.iymbl.com";
+    //OkHttpClient client;
+    private static final String host = "http://client.pf.iymbl.com";
 
 
     public API() {
@@ -29,15 +28,11 @@ public class API {
 
     public API(Context context) {
         this.mContext = context;
-        client = new OkHttpClient.Builder()
-                //.cookieJar(CookieManager.getInstance(context))
-                .build();
-        //checkUpdate();
     }
 
 
     //点赞
-    public String dianzan(int score) {
+    public static String dianzan(int score) {
 
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("score", score + "");
@@ -47,7 +42,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString(4);
             } else {
@@ -60,7 +55,7 @@ public class API {
     }
 
 
-    public String getRanking(String type, int page, int pageSize) {
+    public static String getRanking(String type, int page, int pageSize) {
 
         //rankType=newOnline&page=1
         FormBody.Builder buider = new FormBody.Builder();
@@ -72,7 +67,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString(4);
             } else {
@@ -85,7 +80,7 @@ public class API {
     }
 
 
-    public String getCategory() {
+    public static String getCategory() {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         FormBody formBody = APIheper.getFormBuider(buider).build();//
@@ -93,7 +88,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString(4);
             } else {
@@ -106,7 +101,7 @@ public class API {
     }
 
 
-    public String getCateDetail(int class_id, int page, int pageSize) {
+    public static String getCateDetail(int class_id, int page, int pageSize) {
         //POST /api/book/cate-detail HTTP/1.1
         //&pageSize=20&sortType=popu&page=1&classId=638
         //sortType popu,update
@@ -121,7 +116,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString(4);
             } else {
@@ -134,7 +129,7 @@ public class API {
     }
 
 
-    public String getRecom() {
+    public static String getRecom() {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         FormBody formBody = APIheper.getFormBuider(buider).build();//
@@ -142,7 +137,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString(4);
             } else {
@@ -156,7 +151,7 @@ public class API {
 
 
     ///api/book/contents
-    public String getContents(String bid, String cid) {
+    public static String getContents(String bid, String cid) {
         //&bid=320&sortType=ASC
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("cid", cid).add("bid", bid);
@@ -166,7 +161,7 @@ public class API {
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getCachehttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
 
                 String json = new JSONObject(response.body().string()).toString();
@@ -183,7 +178,7 @@ public class API {
     }
 
 
-    public String getChapters(String bookid) {
+    public static String getChapters(String bookid) {
         //&bid=320&sortType=ASC
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("sortType", "ASC").add("bid", bookid);
@@ -192,7 +187,7 @@ public class API {
         String url = host + "/api/book/chapters";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString();
             } else {
@@ -204,7 +199,7 @@ public class API {
 
     }
 
-    public String search_1(String kw, int page, int pageSize) {
+    public static String search_1(String kw, int page, int pageSize) {
         //POST /api/book/search HTTP/1.1
 
 
@@ -218,7 +213,7 @@ public class API {
         String url = host + "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString();
             } else {
@@ -230,7 +225,7 @@ public class API {
 
     }
 
-    public String search(String bookid, int page) {
+    public static String search(String bookid, int page) {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("bid", bookid);
@@ -239,7 +234,7 @@ public class API {
         String url = host + "/api/book/cartoon-info";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString();
             } else {
@@ -251,7 +246,7 @@ public class API {
 
     }
 
-    public String getBookInfo(String bookid) {
+    public static String getBookInfo(String bookid) {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("bid", bookid);
@@ -260,7 +255,7 @@ public class API {
         String url = host + "/api/book/cartoon-info";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString();
             } else {
@@ -272,7 +267,7 @@ public class API {
 
     }
 
-    public SearchBean search(String kw, int page, int pagesize) {
+    public static SearchBean search(String kw, int page, int pagesize) {
         Gson gson = new Gson();
         SearchBean result = new SearchBean();
         FormBody.Builder buider = new FormBody.Builder();
@@ -281,7 +276,7 @@ public class API {
         String url = host + "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 result = gson.fromJson(response.body().string(), SearchBean.class);
                 return result;
@@ -301,7 +296,7 @@ public class API {
 
     }
 
-    public String search(String kw) {
+    public static String search(String kw) {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("pageSize", "20").add("keyword", kw).add("page", "1");
@@ -310,7 +305,7 @@ public class API {
         String url = host + "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
                 return new JSONObject(response.body().string()).toString();
             } else {

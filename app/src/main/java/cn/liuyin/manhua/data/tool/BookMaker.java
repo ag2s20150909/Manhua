@@ -18,12 +18,11 @@ public class BookMaker {
     public static ContentBean getContent(int bid, int cid) {
 
         Gson gson = new Gson();
-        API api = new API();
         if (FileTool.has("chapter", bid + "_" + cid + ".json")) {
             String json = FileTool.readFile("chapter", bid + "_" + cid + ".json");
             return gson.fromJson(json, ContentBean.class);
         } else {
-            String json = api.getContents(bid + "", cid + "");
+            String json = API.getContents(bid + "", cid + "");
             if (json.startsWith("error:")) {
                 ContentBean c = new ContentBean();
                 c.code = 1;
@@ -46,9 +45,8 @@ public class BookMaker {
     }
 
     public static ChaptersBean getList(Context context, Book book) {
-        API api = new API(context);
         Gson gson = new Gson();
-        ChaptersBean data = gson.fromJson(api.getChapters(book.bookid + ""), ChaptersBean.class);
+        ChaptersBean data = gson.fromJson(API.getChapters(book.bookid + ""), ChaptersBean.class);
         book.count = data.data.list.size();
         book.lastUpdateTime = data.data.lastUpdateTime;
         BookShelf.addBook(book);

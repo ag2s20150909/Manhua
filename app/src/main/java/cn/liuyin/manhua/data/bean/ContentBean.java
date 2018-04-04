@@ -49,7 +49,7 @@ public class ContentBean implements Serializable {
     public int code;
     public String version;
 
-    public ContentBean fromJson(String json) {
+    public static ContentBean fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, ContentBean.class);
     }
