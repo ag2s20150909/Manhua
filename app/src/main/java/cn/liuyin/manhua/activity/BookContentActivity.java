@@ -68,7 +68,7 @@ public class BookContentActivity extends BaseActivity {
         });
         tv.setText(data.data.title);
         book.index = index;
-        BookShelf.addBook(book);
+        BookShelf.updateBook(book);
 
 
         lv.setOnBounceCallBack(new DampingListView.BounceCallBack() {

@@ -8,7 +8,7 @@ import cn.liuyin.manhua.tool.ComonTool;
 import okhttp3.FormBody;
 
 public class APIheper {
-    public static String getSign(Object localObject2) {
+    private static String getSign(Object localObject2) {
         localObject2 = localObject2.toString();
         return ComonTool.getMD5String(ComonTool.getMD5String(ComonTool.getURLDecoderString(((String) localObject2).replaceAll(",", "&").replace("{", "").replace("}", "").replaceAll(" ", "") + "&key=PKwUJyO1GGraH7mDhClqWHExSPgGgcq")));
     }

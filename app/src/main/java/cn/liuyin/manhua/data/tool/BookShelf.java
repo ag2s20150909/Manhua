@@ -172,6 +172,23 @@ public class BookShelf implements Serializable {
         }
     }
 
+    public static void updateBook(Book book) {
+        //FileTool.writeError(System.currentTimeMillis()+"");
+        book.lastRead = (int) (System.currentTimeMillis() / 1000);
+        BookShelf shelf = getBookShelf();
+        for (int i = 0; i < shelf.books.size(); i++) {
+            Book b = shelf.books.get(i);
+            if (b.bookid == book.bookid) {
+                shelf.books.set(i, book);
+                BookShelf.save(shelf);
+                return;
+            }
+        }
+        shelf.books.add(book);
+        BookShelf.save(shelf);
+        return;
+    }
+
     public static void addBook(Book book) {
         //FileTool.writeError(System.currentTimeMillis()+"");
         book.lastRead = (int) (System.currentTimeMillis() / 1000);
@@ -179,6 +196,7 @@ public class BookShelf implements Serializable {
         for (int i = 0; i < shelf.books.size(); i++) {
             Book b = shelf.books.get(i);
             if (b.bookid == book.bookid) {
+                book.index = b.index;
                 shelf.books.set(i, book);
                 BookShelf.save(shelf);
                 return;

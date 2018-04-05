@@ -46,7 +46,7 @@ public class CheckBookUpdateRunnable implements Runnable {
 
     }
 
-    public void doUpdate() {
+    private void doUpdate() {
         try {
             if (listener != null) {
                 listener.onStart();

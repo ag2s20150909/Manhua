@@ -3,22 +3,16 @@ package cn.liuyin.manhua;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cn.liuyin.manhua.service.CheckBookUpdateRunnable;
 import cn.liuyin.manhua.tool.CrashHandler;
 import okhttp3.OkHttpClient;
 
@@ -70,7 +64,7 @@ public class APP extends Application {
                     }
                 })
                 .setCrashSave()
-                .setCrashSaveTargetFolder(this.getExternalFilesDir("crash").getPath());
+                .setCrashSaveTargetFolder(Objects.requireNonNull(this.getExternalFilesDir("crash")).getAbsolutePath());
         File file = new File(mContext.getExternalCacheDir(), "okhttpcache");
         if (!file.exists()) {
             file.mkdirs();

@@ -23,7 +23,7 @@ import cn.liuyin.manhua.tool.NetworkUtil;
 
 
 public class BookShelfActivity extends BaseActivity {
-    ExecutorService fixdeThreadPool;
+    ExecutorService fixedThreadPool;
     BookShelf bookshelf;
     BookShelfAdapter adapter;
     ListView lv;
@@ -33,7 +33,7 @@ public class BookShelfActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        fixdeThreadPool = Executors.newFixedThreadPool(1);
+        fixedThreadPool = Executors.newFixedThreadPool(1);
         lv = new ListView(this);
         setContentView(lv);
         bookshelf = BookShelf.getBookShelf();
@@ -92,7 +92,7 @@ public class BookShelfActivity extends BaseActivity {
                 mHander.obtainMessage(0, "检查更新完成").sendToTarget();
             }
         });
-        fixdeThreadPool.execute(runnable
+        fixedThreadPool.execute(runnable
         );
     }
 
@@ -141,7 +141,7 @@ public class BookShelfActivity extends BaseActivity {
                     Intent i = new Intent(getApplicationContext(), ListActivity.class);
                     i.putExtra("url", data.books.get(p3).link);
                     i.putExtra("book", data.books.get(p3));
-                    BookShelf.addBook(data.books.get(p3));
+                    BookShelf.updateBook(data.books.get(p3));
 
                     startActivity(i);
                 } catch (Exception e) {

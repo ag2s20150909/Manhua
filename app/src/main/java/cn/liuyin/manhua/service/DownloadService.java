@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.liuyin.manhua.R;
-import cn.liuyin.manhua.data.api.API;
 import okhttp3.OkHttpClient;
 
 public class DownloadService extends Service {
@@ -21,12 +20,10 @@ public class DownloadService extends Service {
     public Notification.Builder builder;
     Context mContext;
     OkHttpClient client;
-    API api;
     ExecutorService fixdeThreadPool;
 
     public DownloadService() {
         mContext = this;
-        api = new API();
         fixdeThreadPool = Executors.newFixedThreadPool(5);
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new Notification.Builder(mContext);

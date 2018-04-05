@@ -49,7 +49,7 @@ public class BookMaker {
         ChaptersBean data = gson.fromJson(API.getChapters(book.bookid + ""), ChaptersBean.class);
         book.count = data.data.list.size();
         book.lastUpdateTime = data.data.lastUpdateTime;
-        BookShelf.addBook(book);
+        BookShelf.updateBook(book);
         for (int i = 0; i < data.data.list.size(); i++) {
             data.data.list.get(i).index = i + 1;
         }

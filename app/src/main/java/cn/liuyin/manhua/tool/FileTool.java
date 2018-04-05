@@ -169,6 +169,24 @@ public class FileTool {
         }
     }
 
+    /**
+     * 将图片写入到磁盘
+     *
+     * @param img      图片数据流
+     * @param fileName 文件保存时的名称
+     */
+    public static void writeImageToDisk(byte[] img, String fileName) {
+        try {
+            File file = new File(FileTool.BASEPATH + "/img/" + fileName);
+            FileOutputStream fops = new FileOutputStream(file);
+            fops.write(img);
+            fops.flush();
+            fops.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void writeFile(String filename, String content) {
         String path = BASEPATH;
         try {

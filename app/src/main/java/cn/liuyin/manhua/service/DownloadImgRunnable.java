@@ -1,8 +1,8 @@
 package cn.liuyin.manhua.service;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.ContentBean;
@@ -10,13 +10,15 @@ import cn.liuyin.manhua.tool.FileTool;
 import cn.liuyin.manhua.tool.NetworkUtil;
 import okhttp3.Response;
 
+import static cn.liuyin.manhua.tool.FileTool.writeImageToDisk;
+
 /**
  * Created by asus on 2018/4/4.
  */
 
 public class DownloadImgRunnable implements Runnable {
-    ContentBean mData;
-    int mIndex;
+    private ContentBean mData;
+    private int mIndex;
 
     public DownloadImgRunnable(ContentBean data, int index) {
         this.mData = data;
@@ -29,29 +31,28 @@ public class DownloadImgRunnable implements Runnable {
         doGg(mData, mIndex);
     }
 
-    public void doGg(ContentBean data, int index) {
+    private void doGg(ContentBean data, int index) {
         File f = new File(FileTool.BASEPATH + "/img", data.data.bookTitle);
         if (!f.exists()) {
             f.mkdirs();
         }
+
         for (ContentBean.Data.Contents dl : data.data.contents) {
             //dl.img;
             try {
                 String filename = data.data.bookTitle + "/[" + data.data.bookTitle + "][c" + index + "][p" + dl.order + "].jpg";
                 File file = new File(FileTool.BASEPATH + "/img/" + filename);
-                if (file.exists()) {
-
-                } else {
+                if (!file.exists()) {
                     download(dl.img, filename);
                 }
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
         }
     }
 
-    public void download(String url, String name) {
+    private void download(String url, String name) {
 
         okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", "http://ww.pufei.net/").build();
         try {
@@ -59,33 +60,14 @@ public class DownloadImgRunnable implements Runnable {
                 Response response = APP.getCachehttpClient().newCall(request).execute();
                 if (response.isSuccessful()) {
                     //Bitmap bitmap = BitmapFactory.decodeByteArray(response.body().bytes(), 0, response.body().bytes().length);
-                    writeImageToDisk(response.body().bytes(), name);
-                } else {
-
+                    writeImageToDisk(Objects.requireNonNull(response.body()).bytes(), name);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
 
         }
     }
 
-    /**
-     * 将图片写入到磁盘
-     *
-     * @param img      图片数据流
-     * @param fileName 文件保存时的名称
-     */
-    public static void writeImageToDisk(byte[] img, String fileName) {
-        try {
-            File file = new File(FileTool.BASEPATH + "/img/" + fileName);
-            FileOutputStream fops = new FileOutputStream(file);
-            fops.write(img);
-            fops.flush();
-            fops.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }
 

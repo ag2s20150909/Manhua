@@ -1,12 +1,11 @@
 package cn.liuyin.manhua.data.api;
 
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 
-
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.SearchBean;
@@ -16,43 +15,37 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class API {
-    Context mContext;
+
     //OkHttpClient client;
     private static final String host = "http://client.pf.iymbl.com";
 
 
-    public API() {
-        this(APP.getContext());
-
-    }
-
-    public API(Context context) {
-        this.mContext = context;
+    private API() {
     }
 
 
     //点赞
-    public static String dianzan(int score) {
-
-        FormBody.Builder buider = new FormBody.Builder();
-        buider.add("score", score + "");
-
-        FormBody formBody = buider.build();
-        String url = "http://dianzan.myqcloud.com" + "/rank.php";
-
-        Request request = new Request.Builder().post(formBody).url(url).build();
-        try {
-            Response response = APP.getOkhttpClient().newCall(request).execute();
-            if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString(4);
-            } else {
-                return "error:" + response.message() + " errorcode:" + response.code();
-            }
-        } catch (Exception e) {
-            return "error:" + e.getMessage();
-        }
-
-    }
+//    public static String dianzan(int score) {
+//
+//        FormBody.Builder buider = new FormBody.Builder();
+//        buider.add("score", score + "");
+//
+//        FormBody formBody = buider.build();
+//        String url = "http://dianzan.myqcloud.com" + "/rank.php";
+//
+//        Request request = new Request.Builder().post(formBody).url(url).build();
+//        try {
+//            Response response = APP.getOkhttpClient().newCall(request).execute();
+//            if (response.isSuccessful()) {
+//                return new JSONObject(response.body().string()).toString(4);
+//            } else {
+//                return "error:" + response.message() + " errorcode:" + response.code();
+//            }
+//        } catch (Exception e) {
+//            return "error:" + e.getMessage();
+//        }
+//
+//    }
 
 
     public static String getRanking(String type, int page, int pageSize) {
@@ -69,7 +62,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString(4);
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString(4);
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -90,7 +83,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString(4);
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString(4);
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -118,7 +111,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString(4);
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString(4);
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -139,7 +132,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString(4);
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString(4);
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -164,7 +157,7 @@ public class API {
             Response response = APP.getCachehttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
 
-                String json = new JSONObject(response.body().string()).toString();
+                String json = new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
                 FileTool.writeFiles("chapter", bid + "_" + cid + ".json", json);
                 return json;
             } else {
@@ -189,7 +182,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString();
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -215,7 +208,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString();
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -236,7 +229,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString();
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -257,7 +250,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString();
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -278,7 +271,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                result = gson.fromJson(response.body().string(), SearchBean.class);
+                result = gson.fromJson(Objects.requireNonNull(response.body()).string(), SearchBean.class);
                 return result;
             } else {
                 result.code = 1;
@@ -307,7 +300,7 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(response.body().string()).toString();
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }

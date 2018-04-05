@@ -84,12 +84,12 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-                API api = new API();
+
 
                 try {
 
                     SearchResult d = new SearchResult();
-                    RankingBean data = gson.fromJson(api.getRanking("newOnline", 1, 100), RankingBean.class);
+                    RankingBean data = gson.fromJson(API.getRanking("newOnline", 1, 100), RankingBean.class);
                     d.add(data);
                     mHander.obtainMessage(1, d).sendToTarget();
 
@@ -107,12 +107,12 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-                API api = new API();
+
 
                 try {
 
                     SearchResult d = new SearchResult();
-                    ClassListBean data = gson.fromJson(api.getCateDetail(classId, 1, 100), ClassListBean.class);
+                    ClassListBean data = gson.fromJson(API.getCateDetail(classId, 1, 100), ClassListBean.class);
                     d.add(data);
                     mHander.obtainMessage(1, d).sendToTarget();
 

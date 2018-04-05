@@ -14,14 +14,14 @@ import cn.liuyin.manhua.tool.FileTool;
  */
 
 public class DownloadRunnable implements Runnable {
-    ExecutorService fixdeThreadPool;
-    public int mId;
-    DownloadService mService;
+    private ExecutorService fixedThreadPool;
+    private int mId;
+    private DownloadService mService;
 
-    public DownloadRunnable(DownloadService service, int id) {
+    DownloadRunnable(DownloadService service, int id) {
         this.mId = id;
         this.mService = service;
-        fixdeThreadPool = Executors.newFixedThreadPool(5);
+        fixedThreadPool = Executors.newFixedThreadPool(5);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DownloadRunnable implements Runnable {
         downloadMh(d);
     }
 
-    public void downloadMh(ChaptersBean data) {
+    private void downloadMh(ChaptersBean data) {
         mService.builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentInfo("下载中...")
                 .setContentTitle("正在下载");
@@ -42,7 +42,7 @@ public class DownloadRunnable implements Runnable {
         for (ChaptersBean.Data.List d : data.data.list) {
             ContentBean c = getContent(d.bid, d.cid);
             //doGg(c,i);
-            fixdeThreadPool.execute(new DownloadImgRunnable(c, i));
+            fixedThreadPool.execute(new DownloadImgRunnable(c, i));
             i++;
             mService.notifyMsg(c.data.bookTitle, data.data.list.size(), i, d.bid);
 
@@ -51,10 +51,8 @@ public class DownloadRunnable implements Runnable {
         //mService.notifyMsg(c.data.bookTitle,data.data.list.size(),i,d.bid);
     }
 
-    public static ContentBean getContent(int bid, int cid) {
+    private static ContentBean getContent(int bid, int cid) {
 
-
-        API api = new API();
         if (FileTool.has("chapter", bid + "_" + cid + ".json")) {
             String json = FileTool.readFile("chapter", bid + "_" + cid + ".json");
             return ContentBean.fromJson(json);

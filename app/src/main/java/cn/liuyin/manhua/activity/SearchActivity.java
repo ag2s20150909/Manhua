@@ -107,7 +107,7 @@ public class SearchActivity extends BaseActivity {
             public void run() {
                 Gson gson = new Gson();
                 SearchResult data = new SearchResult();
-                SearchBean d = gson.fromJson(new API().search_1(kw, 1, 100), SearchBean.class);
+                SearchBean d = gson.fromJson(API.search_1(kw, 1, 100), SearchBean.class);
                 data.add(d);
                 mHander.obtainMessage(1, data).sendToTarget();
                 // String u = HttpTool.search(getApplicationContext(), kw);
@@ -116,57 +116,6 @@ public class SearchActivity extends BaseActivity {
         }).start();
     }
 
-
-//    public void search(final String kw) {
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                String u = HttpTool.search(getApplicationContext(), kw);
-//                getHtml(u);
-//            }
-//        }).start();
-//    }
-
-    public void getHtml(final String url) {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                try {
-                    String d = HttpTool.httpGet(url);
-                    if (d.startsWith("error:")) {
-                        mHander.obtainMessage(0, d).sendToTarget();
-                    } else {
-                        Document doc = Jsoup.parse(d, url);
-                        //FileTool.writeFile("doc.html",doc.html());
-                        Elements lists = doc.select(".cont-list").select("li");
-                        mHander.obtainMessage(0, "搜索到" + lists.size() + "条结果").sendToTarget();
-                        SearchResult data = new SearchResult();
-                        for (Element item : lists) {
-                            Book temp = new Book();
-
-                            temp.link = item.select("a").attr("abs:href") + "/";
-                            temp.name = item.select("h3").text();
-                            temp.img = item.select("img").attr("data-src");
-                            temp.author = item.select("dd").get(0).text();
-                            temp.type = item.select("dd").get(1).text();
-                            temp.newChapter = item.select("dd").get(2).text();
-                            temp.updateTime = item.select("dd").get(3).text();
-                            data.add(temp);
-                        }
-
-                        //FileTool.writeFile("update.html",doc.toString());
-                        mHander.obtainMessage(1, data).sendToTarget();
-                    }
-                } catch (Exception e) {
-                    mHander.obtainMessage(0, "error" + e).sendToTarget();
-                }
-            }
-        }).start();
-    }
 
     private void showList(final SearchResult data) {
 
