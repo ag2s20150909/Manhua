@@ -19,11 +19,29 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ComonTool {
+
+    /**
+     * 返回能被一般文件浏览器正确排序的文件名
+     *
+     * @param name    漫画的名称
+     * @param chapter 章节的索引
+     * @param index   图片的索引
+     * @return
+     */
+    public static String getFixedFileName(String name, int chapter, int index) {
+        DecimalFormat df1 = new DecimalFormat("0000");
+        DecimalFormat df2 = new DecimalFormat("00");
+        String result = name + "/[" + name + "][" + df1.format(chapter) + "][" + df2.format(index) + "].jpg";
+        return result;
+    }
+
+
     //url
     private static final String ENCODE = "utf-8";
 
@@ -179,10 +197,7 @@ public class ComonTool {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
                 // 当前网络是连接的
-                if (info.getState() == NetworkInfo.State.CONNECTED) {
-                    // 当前所连接的网络可用
-                    return true;
-                }
+                return info.getState() == NetworkInfo.State.CONNECTED;
             }
         }
         return false;

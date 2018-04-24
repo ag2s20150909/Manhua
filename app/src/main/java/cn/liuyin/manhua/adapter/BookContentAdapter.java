@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +22,9 @@ import java.util.concurrent.Executors;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.bean.ContentBean;
 import cn.liuyin.manhua.service.DownloadImgRunnable;
+import cn.liuyin.manhua.tool.ComonTool;
 import cn.liuyin.manhua.tool.FileTool;
+import cn.liuyin.manhua.tool.ImgLoader;
 import cn.liuyin.manhua.tool.ScreenUtil;
 import cn.liuyin.manhua.tool.ShareUtils;
 import cn.liuyin.view.DampingListView;
@@ -89,16 +90,14 @@ public class BookContentAdapter extends BaseAdapter {
 
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-
-
         }
-        String filename = mData.data.bookTitle + "/[" + mData.data.bookTitle + "][c" + mIndex + "][p" + data.order + "].jpg";
-
+        String filename = ComonTool.getFixedFileName(mData.data.bookTitle, mIndex, data.order);
         File file = new File(FileTool.BASEPATH + "/img", filename);
         if (file.exists()) {
 
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            viewHolder.iv.setImageBitmap(bitmap);
+            //Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            //viewHolder.iv.setImageBitmap(bitmap);
+            ImgLoader.getInstence().load(file, viewHolder.iv);
             //Picasso bug,不能读取本地图片 emmmmmmmmm.
             //Picasso.get().load(file).placeholder(R.drawable.ic_loading).error(R.mipmap.ic_launcher).noFade().into(viewHolder.iv);
 
@@ -200,6 +199,10 @@ public class BookContentAdapter extends BaseAdapter {
         FileTool.saveBitmap(mContext, fileName, bitmap);
         String shareTitle = mData.data.bookTitle + "_" + mData.data.title;
         ShareUtils.shareImageWithTitle(mContext, fileName, shareTitle);
+    }
+
+    private void switchLight(int a) {
+
     }
 
 

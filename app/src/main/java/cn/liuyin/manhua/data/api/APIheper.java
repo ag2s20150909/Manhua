@@ -8,12 +8,24 @@ import cn.liuyin.manhua.tool.ComonTool;
 import okhttp3.FormBody;
 
 public class APIheper {
+    /**
+     * 获得签名
+     *
+     * @param localObject2
+     * @return
+     */
     private static String getSign(Object localObject2) {
         localObject2 = localObject2.toString();
         return ComonTool.getMD5String(ComonTool.getMD5String(ComonTool.getURLDecoderString(((String) localObject2).replaceAll(",", "&").replace("{", "").replace("}", "").replaceAll(" ", "") + "&key=PKwUJyO1GGraH7mDhClqWHExSPgGgcq")));
     }
 
 
+    /**
+     * 追加必要参数，获得请求
+     *
+     * @param builder
+     * @return
+     */
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
         Object localObject2 = new TreeMap();
         builder.add("uid", "0");

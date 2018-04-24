@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.ContentBean;
+import cn.liuyin.manhua.tool.ComonTool;
 import cn.liuyin.manhua.tool.FileTool;
 import cn.liuyin.manhua.tool.NetworkUtil;
 import okhttp3.Response;
@@ -38,9 +39,8 @@ public class DownloadImgRunnable implements Runnable {
         }
 
         for (ContentBean.Data.Contents dl : data.data.contents) {
-            //dl.img;
             try {
-                String filename = data.data.bookTitle + "/[" + data.data.bookTitle + "][c" + index + "][p" + dl.order + "].jpg";
+                String filename = ComonTool.getFixedFileName(data.data.bookTitle, index, dl.order);
                 File file = new File(FileTool.BASEPATH + "/img/" + filename);
                 if (!file.exists()) {
                     download(dl.img, filename);
@@ -54,12 +54,11 @@ public class DownloadImgRunnable implements Runnable {
 
     private void download(String url, String name) {
 
-        okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", "http://ww.pufei.net/").build();
+        okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", "http://www.pufei.net/").build();
         try {
             if (NetworkUtil.getNetWorkStates(APP.getContext()) == NetworkUtil.TYPE_WIFI) {
                 Response response = APP.getCachehttpClient().newCall(request).execute();
                 if (response.isSuccessful()) {
-                    //Bitmap bitmap = BitmapFactory.decodeByteArray(response.body().bytes(), 0, response.body().bytes().length);
                     writeImageToDisk(Objects.requireNonNull(response.body()).bytes(), name);
                 }
             }
