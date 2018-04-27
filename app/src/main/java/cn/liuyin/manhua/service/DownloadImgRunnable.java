@@ -24,12 +24,16 @@ public class DownloadImgRunnable implements Runnable {
     public DownloadImgRunnable(ContentBean data, int index) {
         this.mData = data;
         this.mIndex = index;
+        System.out.println(data.toJson());
     }
 
     @Override
     public void run() {
         // TODO: Implement this method
-        doGg(mData, mIndex);
+        if (mData.code == 0) {
+            doGg(mData, mIndex);
+        }
+
     }
 
     private void doGg(ContentBean data, int index) {

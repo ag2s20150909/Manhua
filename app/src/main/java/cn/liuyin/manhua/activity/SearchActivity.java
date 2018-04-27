@@ -108,8 +108,13 @@ public class SearchActivity extends BaseActivity {
                 Gson gson = new Gson();
                 SearchResult data = new SearchResult();
                 SearchBean d = gson.fromJson(API.search_1(kw, 1, 100), SearchBean.class);
-                data.add(d);
-                mHander.obtainMessage(1, data).sendToTarget();
+                if (d.code == 0) {
+                    data.add(d);
+                    mHander.obtainMessage(1, data).sendToTarget();
+                } else {
+                    mHander.obtainMessage(0, data.message).sendToTarget();
+                }
+
                 // String u = HttpTool.search(getApplicationContext(), kw);
                 // getHtml(u);
             }

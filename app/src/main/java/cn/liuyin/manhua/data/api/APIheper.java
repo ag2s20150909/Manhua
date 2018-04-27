@@ -29,11 +29,11 @@ public class APIheper {
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
         Object localObject2 = new TreeMap();
         builder.add("uid", "0");
-        builder.add("channel_id", "6192");
-        builder.add("app_version", "1.0.0");
+        builder.add("channel_id", "0010");
+        builder.add("app_version", "2.1.0");
         builder.add("timestamp", System.currentTimeMillis() + "");
         builder.add("platform", "Android");
-        builder.add("device_id", ComonTool.getMD5String("Android"));
+        builder.add("device_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));
         builder.add("token", "");
         int i = 0;
         while (i < builder.build().size()) {

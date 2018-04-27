@@ -110,6 +110,11 @@ public class BookContentActivity extends BaseActivity {
                     //=gson.fromJson(api.getContents(chapters.data.list.get(index-1).bid+"",chapters.data.list.get(index-1).cid+""),ContentBean.class);
                     String msg = gson.toJson(data, ContentBean.class);
                     FileTool.writeFile("debug.txt", msg);
+                    if (data.code == 0) {
+                        mHander.obtainMessage(2, data).sendToTarget();
+                    } else {
+                        mHander.obtainMessage(0, data.message).sendToTarget();
+                    }
                     mHander.obtainMessage(2, data).sendToTarget();
                 } catch (Exception e) {
                     FileTool.writeError(e.getMessage());
@@ -128,6 +133,7 @@ public class BookContentActivity extends BaseActivity {
             switch (p1.what) {
                 case 0:
                     String msg = (String) p1.obj;
+
                     Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
 
                     break;

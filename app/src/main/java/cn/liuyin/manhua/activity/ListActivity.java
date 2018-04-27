@@ -98,7 +98,12 @@ public class ListActivity extends BaseActivity {
                 try {
 
                     ChaptersBean data = BookMaker.getList(ListActivity.this, book);
-                    mHander.obtainMessage(1, data).sendToTarget();
+                    if (data.code == 0) {
+                        mHander.obtainMessage(1, data).sendToTarget();
+                    } else {
+                        mHander.obtainMessage(0, data.message).sendToTarget();
+                    }
+
 
 
                 } catch (Exception e) {

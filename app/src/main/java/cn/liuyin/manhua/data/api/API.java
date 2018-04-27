@@ -158,6 +158,7 @@ public class API {
             if (response.isSuccessful()) {
 
                 String json = new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
+                System.out.println(json);
                 FileTool.writeFiles("chapter", bid + "_" + cid + ".json", json);
                 return json;
             } else {

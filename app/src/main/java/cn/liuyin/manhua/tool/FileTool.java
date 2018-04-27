@@ -218,6 +218,7 @@ public class FileTool {
 
         try {
             throwable.printStackTrace(pw);
+            System.out.println(pw.toString());
             return sw.toString();
         } finally {
             pw.close();

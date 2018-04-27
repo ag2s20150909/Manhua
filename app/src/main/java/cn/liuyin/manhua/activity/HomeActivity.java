@@ -90,8 +90,13 @@ public class HomeActivity extends BaseActivity {
 
                     SearchResult d = new SearchResult();
                     RankingBean data = gson.fromJson(API.getRanking("newOnline", 1, 100), RankingBean.class);
-                    d.add(data);
-                    mHander.obtainMessage(1, d).sendToTarget();
+                    if (data.code == 0) {
+                        d.add(data);
+                        mHander.obtainMessage(1, d).sendToTarget();
+                    } else {
+                        mHander.obtainMessage(1, data.message).sendToTarget();
+                    }
+
 
                 } catch (Exception e) {
                     FileTool.writeError(e);
