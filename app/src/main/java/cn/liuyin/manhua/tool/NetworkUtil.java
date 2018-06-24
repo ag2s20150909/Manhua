@@ -23,7 +23,7 @@ public class NetworkUtil {
      * @return one of TYPE_NONE, TYPE_MOBILE, TYPE_WIFI
      * @permission android.permission.ACCESS_NETWORK_STATE
      */
-    public static final int getNetWorkStates(Context context) {
+    public static int getNetWorkStates(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {

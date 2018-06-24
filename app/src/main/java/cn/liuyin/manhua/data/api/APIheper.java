@@ -1,9 +1,13 @@
 package cn.liuyin.manhua.data.api;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.tool.ComonTool;
 import okhttp3.FormBody;
 
@@ -29,8 +33,9 @@ public class APIheper {
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
         Object localObject2 = new TreeMap();
         builder.add("uid", "0");
+        String version = APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).getString("version", "3.0.0");
         builder.add("channel_id", "0010");
-        builder.add("app_version", "2.1.0");
+        builder.add("app_version", version);
         builder.add("timestamp", System.currentTimeMillis() + "");
         builder.add("platform", "Android");
         builder.add("device_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));

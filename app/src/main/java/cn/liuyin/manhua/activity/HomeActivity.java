@@ -1,6 +1,7 @@
 package cn.liuyin.manhua.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.HomeAdapter;
 import cn.liuyin.manhua.adapter.SearchAdapter;
@@ -57,6 +59,7 @@ public class HomeActivity extends BaseActivity {
 
         setContentView(l);
         getNew();
+        //startActivity(new Intent(this,SettingsActivity.class));
 
     }
 
@@ -90,6 +93,7 @@ public class HomeActivity extends BaseActivity {
 
                     SearchResult d = new SearchResult();
                     RankingBean data = gson.fromJson(API.getRanking("newOnline", 1, 100), RankingBean.class);
+                    APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", data.version).apply();
                     if (data.code == 0) {
                         d.add(data);
                         mHander.obtainMessage(1, d).sendToTarget();

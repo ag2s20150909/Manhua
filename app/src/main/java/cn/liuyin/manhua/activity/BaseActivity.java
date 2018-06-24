@@ -22,6 +22,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cn.liuyin.manhua.tool.FileTool;
+
 @SuppressLint("Registered")
 public class BaseActivity extends Activity {
     private final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
@@ -126,10 +128,12 @@ public class BaseActivity extends Activity {
         public void onSensorChanged(SensorEvent event) {
             //当传感器监测到的数值发生变化时
             float value = event.values[0];
-            if (value <= 5.0) {
-                ChangeToNight();
-            } else {
-                ChangeToDay();
+            if (FileTool.has("night.dat")) {
+                if (value <= 5.0) {
+                    ChangeToNight();
+                } else {
+                    ChangeToDay();
+                }
             }
             //setTitle(""+event.values[0]+"/"+event.values[1]+"/"+event.values[2]+"@"+event.values.length);
             //tv.setText(""+value);

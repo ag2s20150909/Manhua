@@ -17,19 +17,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.SearchAdapter;
 import cn.liuyin.manhua.data.api.API;
 import cn.liuyin.manhua.data.bean.SearchBean;
 import cn.liuyin.manhua.data.bean.SearchResult;
-import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookShelf;
-import cn.liuyin.manhua.tool.HttpTool;
+
 
 public class SearchActivity extends BaseActivity {
     EditText et;

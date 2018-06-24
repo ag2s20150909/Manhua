@@ -165,7 +165,7 @@ public class BookShelfActivity extends BaseActivity {
 
     public void showSS(final int index) {
 
-        final String[] items = new String[]{"置顶漫画", "上移漫画", "下移漫画", "删除漫画", "检查更新", "更新时间排序", "阅读时间排序", "未读章节排序", "下载漫画"};
+        final String[] items = new String[]{"置顶漫画", "上移漫画", "下移漫画", "删除漫画", "检查更新", "更新时间排序", "阅读时间排序", "未读章节排序", "下载漫画", "清除缓存"};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
@@ -212,6 +212,9 @@ public class BookShelfActivity extends BaseActivity {
                         i.putExtra("action", "download");
                         i.putExtra("bid", bookshelf.books.get(index).bookid);
                         startService(i);
+                    case 9:
+
+                        break;
 
 
                 }

@@ -109,8 +109,7 @@ public class BookShelf implements Serializable {
     public static BookShelf MoveDownByIndex(int index) {
 
         BookShelf shelf = getBookShelf();
-        ArrayList<Book> tbooks = new ArrayList<>();
-        tbooks.addAll(shelf.books);
+        ArrayList<Book> tbooks = new ArrayList<>(shelf.books);
         if (index < (shelf.books.size() - 1)) {
             tbooks.set(index + 1, shelf.books.get(index));
             tbooks.set(index, shelf.books.get(index + 1));
@@ -125,8 +124,7 @@ public class BookShelf implements Serializable {
     public static BookShelf MoveUpByIndex(int index) {
 
         BookShelf shelf = getBookShelf();
-        ArrayList<Book> tbooks = new ArrayList<>();
-        tbooks.addAll(shelf.books);
+        ArrayList<Book> tbooks = new ArrayList<>(shelf.books);
         if (index > 0) {
             tbooks.set(index - 1, shelf.books.get(index));
             tbooks.set(index, shelf.books.get(index - 1));
