@@ -128,6 +128,7 @@ public class BookContentAdapter extends BaseAdapter {
             @Override
             public void onClick(DialogInterface p1, int p2) {
                 switch (p2) {
+
                     case 0:
                         savaBitmap(index);
                         break;
