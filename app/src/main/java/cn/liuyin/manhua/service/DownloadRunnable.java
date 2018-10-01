@@ -21,7 +21,7 @@ public class DownloadRunnable implements Runnable {
     DownloadRunnable(DownloadService service, int id) {
         this.mId = id;
         this.mService = service;
-        fixedThreadPool = Executors.newFixedThreadPool(5);
+        fixedThreadPool = Executors.newFixedThreadPool(1);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DownloadRunnable implements Runnable {
     }
 
     private void downloadMh(ChaptersBean data) {
-        mService.builder.setSmallIcon(R.mipmap.ic_launcher)
+        mService.builder.setSmallIcon(R.drawable.ic_launcher)
                 .setContentInfo("下载中...")
                 .setContentTitle("正在下载");
 

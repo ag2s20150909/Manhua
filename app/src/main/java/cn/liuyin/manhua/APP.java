@@ -13,7 +13,9 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.liuyin.manhua.data.api.API;
 import cn.liuyin.manhua.tool.CrashHandler;
+import cn.liuyin.manhua.tool.okhttp.GzipRequestInterceptor;
 import okhttp3.OkHttpClient;
 
 /**
@@ -35,6 +37,7 @@ public class APP extends Application {
     public static okhttp3.OkHttpClient getOkhttpClient() {
         if (mClient == null) {
             mClient = new OkHttpClient.Builder()
+                    //.addInterceptor(new GzipRequestInterceptor())
                     .build();
         }
         return mClient;
@@ -43,6 +46,7 @@ public class APP extends Application {
     public static okhttp3.OkHttpClient getCachehttpClient() {
         if (mCacheClient == null) {
             mCacheClient = new OkHttpClient.Builder()
+                    //.addInterceptor(new GzipRequestInterceptor())
                     .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
                     .build();
         }
@@ -72,6 +76,7 @@ public class APP extends Application {
 
         okhttp3.Cache cache = new okhttp3.Cache(file, 1024 * 1024 * 500);
         okhttp3.OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new GzipRequestInterceptor())
                 .cache(cache)
                 .build();
 
@@ -80,6 +85,7 @@ public class APP extends Application {
         picassoBuilder.downloader(okHttp3Downloader).build();
         Picasso picasso = picassoBuilder.build();
         Picasso.setSingletonInstance(picasso);
+        API.CheckAppVersion();
 
 
     }

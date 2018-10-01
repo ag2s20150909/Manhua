@@ -1,6 +1,8 @@
 package cn.liuyin.manhua.data.api;
 
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -8,6 +10,7 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import cn.liuyin.manhua.APP;
+import cn.liuyin.manhua.data.bean.RankingBean;
 import cn.liuyin.manhua.data.bean.SearchBean;
 import cn.liuyin.manhua.tool.FileTool;
 import okhttp3.FormBody;
@@ -24,29 +27,25 @@ public class API {
     }
 
 
-    //点赞
-//    public static String dianzan(int score) {
-//
-//        FormBody.Builder buider = new FormBody.Builder();
-//        buider.add("score", score + "");
-//
-//        FormBody formBody = buider.build();
-//        String url = "http://dianzan.myqcloud.com" + "/rank.php";
-//
-//        Request request = new Request.Builder().post(formBody).url(url).build();
-//        try {
-//            Response response = APP.getOkhttpClient().newCall(request).execute();
-//            if (response.isSuccessful()) {
-//                return new JSONObject(response.body().string()).toString(4);
-//            } else {
-//                return "error:" + response.message() + " errorcode:" + response.code();
-//            }
-//        } catch (Exception e) {
-//            return "error:" + e.getMessage();
-//        }
-//
-//    }
+    public static void CheckAppVersion() {
+        FormBody.Builder buider = new FormBody.Builder();
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/Sys/CheckAppVersion";
 
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = APP.getOkhttpClient().newCall(request).execute();
+            if (response.isSuccessful()) {
+
+                String version = new JSONObject(Objects.requireNonNull(response.body()).string()).getString("version");
+                APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", version).apply();
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static String getRanking(String type, int page, int pageSize) {
 
@@ -62,11 +61,15 @@ public class API {
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return new JSONObject(Objects.requireNonNull(response.body()).string()).toString(4);
+                String json = new String(response.body().bytes(), "utf-8");
+                FileTool.writeFile("debug.txt", json);
+                System.err.println(json);
+                return new JSONObject(Objects.requireNonNull(json)).toString(4);
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -88,6 +91,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -116,6 +120,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -137,6 +142,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -165,6 +171,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -188,6 +195,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -214,6 +222,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -235,6 +244,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -256,6 +266,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 
@@ -282,6 +293,7 @@ public class API {
                 //return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result.code = 1;
             result.success = false;
             result.message = e.getLocalizedMessage();
@@ -306,6 +318,7 @@ public class API {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return "error:" + e.getMessage();
         }
 

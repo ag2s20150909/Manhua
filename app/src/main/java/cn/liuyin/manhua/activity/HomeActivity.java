@@ -90,12 +90,13 @@ public class HomeActivity extends BaseActivity {
 
 
                 try {
-
+                    // API.CheckAppVersion();
                     SearchResult d = new SearchResult();
                     RankingBean data = gson.fromJson(API.getRanking("newOnline", 1, 100), RankingBean.class);
-                    APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", data.version).apply();
+
                     if (data.code == 0) {
                         d.add(data);
+                        System.err.println(data.toString());
                         mHander.obtainMessage(1, d).sendToTarget();
                     } else {
                         mHander.obtainMessage(1, data.message).sendToTarget();

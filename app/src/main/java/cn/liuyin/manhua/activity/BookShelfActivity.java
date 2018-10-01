@@ -169,7 +169,7 @@ public class BookShelfActivity extends BaseActivity {
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // 设置参数
-        builder.setIcon(R.mipmap.ic_launcher).setTitle("对漫画的操作").setItems(items, new DialogInterface.OnClickListener() {
+        builder.setIcon(R.drawable.ic_launcher).setTitle("对漫画的操作").setItems(items, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface p1, int p2) {

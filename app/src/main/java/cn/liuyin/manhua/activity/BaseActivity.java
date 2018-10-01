@@ -67,9 +67,13 @@ public class BaseActivity extends Activity {
     }
 
     public void ChangeToDay() {
+        if (mIsAddedView) {
+            mWindowManager.removeViewImmediate(mNightView);
+            mIsAddedView = false;
+        }
 
         //APP.isNightMode = false;
-        mNightView.setBackgroundResource(android.R.color.transparent);
+        //mNightView.setBackgroundResource(android.R.color.transparent);
     }
 
 
@@ -82,7 +86,10 @@ public class BaseActivity extends Activity {
 
     public void ChangeToNight() {
         //APP.isNightMode = true;
-        initNightView();
+        if (mIsAddedView = false) {
+            initNightView();
+        }
+
         mNightView.setBackgroundColor(Color.argb(MASK_RATE, 0, 0, 0));
     }
 

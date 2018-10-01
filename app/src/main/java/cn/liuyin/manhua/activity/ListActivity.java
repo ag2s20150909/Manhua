@@ -107,7 +107,8 @@ public class ListActivity extends BaseActivity {
 
 
                 } catch (Exception e) {
-                    mHander.obtainMessage(0, "error" + e).sendToTarget();
+                    e.printStackTrace();
+                    mHander.obtainMessage(0, "error" + FileTool.getStackTrace(e)).sendToTarget();
                 }
             }
         }).start();

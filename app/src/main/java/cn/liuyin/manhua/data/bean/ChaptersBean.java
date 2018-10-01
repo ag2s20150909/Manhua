@@ -33,6 +33,7 @@ public class ChaptersBean implements Serializable {
             public int cid;
             public int bid;
             public String title;
+            public boolean isSaved = false;
             public int isVip;
             public int preId;
             public int nextId;

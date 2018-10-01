@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import cn.liuyin.manhua.R;
@@ -62,6 +63,7 @@ public class BookListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.tv_index = convertView.findViewById(R.id.index);
             viewHolder.tv_name = convertView.findViewById(R.id.name);
+            viewHolder.iv_isSaved = convertView.findViewById(R.id.is_saved);
 
             convertView.setTag(viewHolder);
         } else {
@@ -70,6 +72,11 @@ public class BookListAdapter extends BaseAdapter {
         }
         viewHolder.tv_index.setText(String.valueOf(position + 1));
         viewHolder.tv_name.setText(data.title);
+        if (data.isSaved) {
+            viewHolder.iv_isSaved.setImageResource(R.drawable.ic_saved);
+        } else {
+            viewHolder.iv_isSaved.setImageResource(R.drawable.ic_unsave);
+        }
         if (position + 1 == mIndex) {
             viewHolder.tv_index.setBackgroundResource(R.drawable.rand_background_accent);
         } else {
@@ -91,6 +98,7 @@ public class BookListAdapter extends BaseAdapter {
 
         TextView tv_index;
         TextView tv_name;
+        ImageView iv_isSaved;
 
 
     }

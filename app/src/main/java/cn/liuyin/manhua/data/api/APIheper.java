@@ -33,12 +33,12 @@ public class APIheper {
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
         Object localObject2 = new TreeMap();
         builder.add("uid", "0");
-        String version = APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).getString("version", "3.0.0");
-        builder.add("channel_id", "0010");
+        String version = APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).getString("version", "3.1.5");
+        builder.add("channel_id", "6192");
+        System.err.println("APP_DEBUG:" + version);
         builder.add("app_version", version);
         builder.add("timestamp", System.currentTimeMillis() + "");
-        builder.add("platform", "Android");
-        builder.add("device_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));
+        builder.add("pvdevice_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));
         builder.add("token", "");
         int i = 0;
         while (i < builder.build().size()) {

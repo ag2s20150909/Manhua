@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.ContentBean;
 import cn.liuyin.manhua.tool.ComonTool;
@@ -24,7 +25,6 @@ public class DownloadImgRunnable implements Runnable {
     public DownloadImgRunnable(ContentBean data, int index) {
         this.mData = data;
         this.mIndex = index;
-        System.out.println(data.toJson());
     }
 
     @Override
@@ -50,7 +50,8 @@ public class DownloadImgRunnable implements Runnable {
                     download(dl.img, filename);
                 }
 
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }

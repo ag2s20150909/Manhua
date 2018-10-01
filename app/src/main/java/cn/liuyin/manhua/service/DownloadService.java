@@ -8,10 +8,10 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 
-import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.R;
 import okhttp3.OkHttpClient;
 
@@ -23,14 +23,11 @@ public class DownloadService extends Service {
     ExecutorService fixdeThreadPool;
 
     public DownloadService() {
-        mContext = this;
+        mContext = APP.getContext();
         fixdeThreadPool = Executors.newFixedThreadPool(5);
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new Notification.Builder(mContext);
-
-        client = new OkHttpClient.Builder()
-                .cache(new okhttp3.Cache(new File(this.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
-                .build();
+        client = APP.getCachehttpClient();
 
     }
 
@@ -57,7 +54,7 @@ public class DownloadService extends Service {
             progress = now * 100 / all;
         }
 
-        builder.setSmallIcon(R.mipmap.ic_launcher_round).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)).setContentTitle(title);
+        builder.setSmallIcon(R.drawable.ic_launcher).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).setContentTitle(title);
         if (progress >= 0 && progress < 100) {
             //下载进行中
             builder.setContentText("正在下载:" + title + progress + "%");
