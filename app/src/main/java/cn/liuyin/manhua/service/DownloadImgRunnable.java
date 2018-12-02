@@ -58,10 +58,10 @@ public class DownloadImgRunnable implements Runnable {
     }
 
     private void download(String url, String name) {
-        String tag1 = "https://manhua.qpic.cn";
-        if (url.contains(tag1)) {
-            url = url.substring(url.indexOf(tag1));
-        }
+//        String tag1 = "https://manhua.qpic.cn";
+//        if (url.contains(tag1)) {
+//            url = url.substring(url.indexOf(tag1));
+//        }
 
         okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", url).build();
         try {

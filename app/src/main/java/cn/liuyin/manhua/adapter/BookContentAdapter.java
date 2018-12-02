@@ -47,7 +47,6 @@ public class BookContentAdapter extends BaseAdapter {
 
     public void updateView(ContentBean data, int index) {
         this.mData = data;
-        //mData.fix();
         this.mIndex = index;
         mThreadPool.execute(new DownloadImgRunnable(data, index));
         this.notifyDataSetChanged();

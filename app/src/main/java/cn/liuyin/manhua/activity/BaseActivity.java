@@ -16,7 +16,6 @@ public class BaseActivity extends Activity {
     private final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Implement this method

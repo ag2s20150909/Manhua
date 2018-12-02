@@ -43,17 +43,17 @@ public class ContentBean implements Serializable {
         public int isBuy;
     }
 
-//    public ContentBean fix(){
-//      for (int i=0;i<this.data.contents.size();i++){
-//          String tag1="https://manhua.qpic.cn";
-//          Data.Contents d=this.data.contents.get(i);
-//          if (d.img.contains(tag1)){
-//              d.img=d.img.substring(d.img.indexOf(tag1));
-//              this.data.contents.set(i,d);
-//          }
-//      }
-//
-//    }
+    public ContentBean fix() {
+        for (int i = 0; i < this.data.contents.size(); i++) {
+            String tag1 = "https://manhua.qpic.cn";
+            Data.Contents d = this.data.contents.get(i);
+            if (d.img.contains(tag1)) {
+                d.img = d.img.substring(d.img.indexOf(tag1));
+                this.data.contents.set(i, d);
+            }
+        }
+        return this;
+    }
 
     public Boolean success;
     public String token;

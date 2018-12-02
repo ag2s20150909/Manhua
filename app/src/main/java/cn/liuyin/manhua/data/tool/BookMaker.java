@@ -23,7 +23,7 @@ public class BookMaker {
         Gson gson = new Gson();
         if (FileTool.has("chapter", bid + "_" + cid + ".json")) {
             String json = FileTool.readFile("chapter", bid + "_" + cid + ".json");
-            return gson.fromJson(json, ContentBean.class);
+            return gson.fromJson(json, ContentBean.class).fix();
         } else {
             String json = API.getContents(bid + "", cid + "");
             if (json.startsWith("error:")) {
