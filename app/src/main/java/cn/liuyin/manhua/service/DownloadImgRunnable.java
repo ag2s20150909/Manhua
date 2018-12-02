@@ -58,8 +58,12 @@ public class DownloadImgRunnable implements Runnable {
     }
 
     private void download(String url, String name) {
+        String tag1 = "https://manhua.qpic.cn";
+        if (url.contains(tag1)) {
+            url = url.substring(url.indexOf(tag1));
+        }
 
-        okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", "http://www.pufei.net/").build();
+        okhttp3.Request request = new okhttp3.Request.Builder().get().url(url).header("Referer", url).build();
         try {
             if (NetworkUtil.getNetWorkStates(APP.getContext()) == NetworkUtil.TYPE_WIFI) {
                 Response response = APP.getCachehttpClient().newCall(request).execute();

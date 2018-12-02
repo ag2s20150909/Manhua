@@ -1,6 +1,7 @@
 package cn.liuyin.manhua.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.tool.BookMaker;
@@ -17,8 +18,10 @@ public class CheckBookUpdateRunnable implements Runnable {
     private Context mContext;
     private BookShelf bookshelf;
 
+
     public CheckBookUpdateRunnable(Context context) {
         this.mContext = context;
+
 
         bookshelf = BookShelf.getBookShelf();
     }
@@ -29,6 +32,7 @@ public class CheckBookUpdateRunnable implements Runnable {
 
     @Override
     public void run() {
+
         if (NetworkUtil.getNetWorkStates(APP.getContext()) != NetworkUtil.TYPE_NONE) {
             if (listener != null) {
                 if (NetworkUtil.getNetWorkStates(APP.getContext()) == NetworkUtil.TYPE_MOBILE) {
@@ -47,6 +51,7 @@ public class CheckBookUpdateRunnable implements Runnable {
     }
 
     private void doUpdate() {
+
         try {
             if (listener != null) {
                 listener.onStart();
@@ -74,6 +79,7 @@ public class CheckBookUpdateRunnable implements Runnable {
 
             }
             if (listener != null) {
+
                 listener.onFinished();
             }
 

@@ -3,6 +3,7 @@ package cn.liuyin.manhua.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookShelfAdapter;
 import cn.liuyin.manhua.data.tool.BookShelf;
@@ -27,16 +29,21 @@ public class BookShelfActivity extends BaseActivity {
     BookShelf bookshelf;
     BookShelfAdapter adapter;
     ListView lv;
+    SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        preferences = getSharedPreferences("setting", 0);
         fixedThreadPool = Executors.newFixedThreadPool(1);
         lv = new ListView(this);
         setContentView(lv);
         bookshelf = BookShelf.getBookShelf();
+        if (bookshelf.sum > 80) {
+            APP.showToast("书架最多可放80部，放多了存在bug,清除一些不看的书");
+        }
         //adapter = new BookShelfAdapter(this, bookshelf);
         showList(bookshelf, true);
         if (NetworkUtil.getNetWorkStates(this) == NetworkUtil.TYPE_WIFI) {
@@ -63,37 +70,41 @@ public class BookShelfActivity extends BaseActivity {
 
 
     public void CheckUpdate() {
-        CheckBookUpdateRunnable runnable = new CheckBookUpdateRunnable(this);
-        runnable.setListener(new CheckBookUpdateRunnable.MListener() {
+        if (System.currentTimeMillis() - preferences.getLong("last_check", 0) > 1000 * 60) {
+            CheckBookUpdateRunnable runnable = new CheckBookUpdateRunnable(this);
+            runnable.setListener(new CheckBookUpdateRunnable.MListener() {
+                @Override
+                public void onStart() {
+                    // TODO: Implement this method
+                    mHander.obtainMessage(0, "开始检查更新").sendToTarget();
+                }
 
-            @Override
-            public void onStart() {
-                // TODO: Implement this method
-                mHander.obtainMessage(0, "开始检查更新").sendToTarget();
-            }
-
-            @Override
-            public void doUpdate(BookShelf bookshelf) {
-                // TODO: Implement this method
-                mHander.obtainMessage(1, bookshelf).sendToTarget();
+                @Override
+                public void doUpdate(BookShelf bookshelf) {
+                    // TODO: Implement this method
+                    mHander.obtainMessage(1, bookshelf).sendToTarget();
 
 
-            }
+                }
 
-            @Override
-            public void err(String err) {
-                // TODO: Implement this method
-                mHander.obtainMessage(0, err).sendToTarget();
-            }
+                @Override
+                public void err(String err) {
+                    // TODO: Implement this method
+                    mHander.obtainMessage(0, err).sendToTarget();
+                }
 
-            @Override
-            public void onFinished() {
-                // TODO: Implement this method
-                mHander.obtainMessage(0, "检查更新完成").sendToTarget();
-            }
-        });
-        fixedThreadPool.execute(runnable
-        );
+                @Override
+                public void onFinished() {
+                    // TODO: Implement this method
+                    mHander.obtainMessage(0, "检查更新完成").sendToTarget();
+                    preferences.edit().putLong("last_check", System.currentTimeMillis()).apply();
+                }
+            });
+            fixedThreadPool.execute(runnable
+            );
+        }
+
+
     }
 
 

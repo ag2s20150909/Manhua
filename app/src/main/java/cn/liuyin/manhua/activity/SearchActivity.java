@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.SearchAdapter;
 import cn.liuyin.manhua.data.api.API;
@@ -130,12 +131,16 @@ public class SearchActivity extends BaseActivity {
 
 
                 try {
-                    BookShelf.addBook(data.results.get(p3));
-                    Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                    i.putExtra("url", data.results.get(p3).link);
-                    i.putExtra("book", data.results.get(p3));
-                    //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
-                    startActivity(i);
+                    if (BookShelf.getBookShelf().sum < 80) {
+                        BookShelf.addBook(data.results.get(p3));
+                        Intent i = new Intent(getApplicationContext(), ListActivity.class);
+                        i.putExtra("url", data.results.get(p3).link);
+                        i.putExtra("book", data.results.get(p3));
+                        //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
+                        startActivity(i);
+                    } else {
+                        APP.showToast("书架最多可放80部，放多了存在bug,删除一些不看的书");
+                    }
                 } catch (Exception e) {
                     mHander.obtainMessage(0, e.getMessage()).sendToTarget();
                 }

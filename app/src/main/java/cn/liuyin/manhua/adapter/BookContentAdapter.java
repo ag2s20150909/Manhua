@@ -47,6 +47,7 @@ public class BookContentAdapter extends BaseAdapter {
 
     public void updateView(ContentBean data, int index) {
         this.mData = data;
+        //mData.fix();
         this.mIndex = index;
         mThreadPool.execute(new DownloadImgRunnable(data, index));
         this.notifyDataSetChanged();
@@ -101,7 +102,12 @@ public class BookContentAdapter extends BaseAdapter {
             //Picasso.get().load(file).placeholder(R.drawable.ic_loading).error(R.mipmap.ic_launcher).noFade().into(viewHolder.iv);
 
         } else {
-            Picasso.get().load(data.img).placeholder(R.drawable.ic_loading).noFade().into(viewHolder.iv);
+            String url = data.img;
+            String tag1 = "https://manhua.qpic.cn";
+            if (url.contains(tag1)) {
+                url = url.substring(url.indexOf(tag1));
+            }
+            Picasso.get().load(url).placeholder(R.drawable.ic_loading).noFade().into(viewHolder.iv);
         }
 
         return convertView;

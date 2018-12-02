@@ -6,8 +6,8 @@ android {
         applicationId "cn.liuyin.manhua"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3-2018.12.02"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resConfigs "zh"
         vectorDrawables.useSupportLibrary = true
@@ -19,7 +19,7 @@ android {
             zipAlignEnabled true
         }
     }
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {

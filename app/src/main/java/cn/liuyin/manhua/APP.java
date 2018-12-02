@@ -3,6 +3,8 @@ package cn.liuyin.manhua;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import com.squareup.picasso.OkHttp3Downloader;
@@ -16,6 +18,7 @@ import java.util.concurrent.Executors;
 import cn.liuyin.manhua.data.api.API;
 import cn.liuyin.manhua.tool.CrashHandler;
 import cn.liuyin.manhua.tool.okhttp.GzipRequestInterceptor;
+import cn.liuyin.manhua.tool.okhttp.ShortCacheInterceptor;
 import okhttp3.OkHttpClient;
 
 /**
@@ -38,6 +41,8 @@ public class APP extends Application {
         if (mClient == null) {
             mClient = new OkHttpClient.Builder()
                     //.addInterceptor(new GzipRequestInterceptor())
+                    .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
+                    .addNetworkInterceptor(new ShortCacheInterceptor())
                     .build();
         }
         return mClient;
@@ -88,7 +93,15 @@ public class APP extends Application {
         API.CheckAppVersion();
 
 
+
     }
+
+    public static void showToast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+    }
+
+
+
 
 
 }

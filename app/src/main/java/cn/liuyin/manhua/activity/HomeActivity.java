@@ -1,7 +1,6 @@
 package cn.liuyin.manhua.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,7 +58,7 @@ public class HomeActivity extends BaseActivity {
 
         setContentView(l);
         getNew();
-        //startActivity(new Intent(this,SettingsActivity.class));
+
 
     }
 
@@ -150,12 +149,17 @@ public class HomeActivity extends BaseActivity {
 
 
                 try {
-                    BookShelf.addBook(data.results.get(p3));
-                    Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                    i.putExtra("url", data.results.get(p3).link);
-                    i.putExtra("book", data.results.get(p3));
-                    //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
-                    startActivity(i);
+                    if (BookShelf.getBookShelf().sum < 80) {
+                        BookShelf.addBook(data.results.get(p3));
+
+                        Intent i = new Intent(getApplicationContext(), ListActivity.class);
+                        i.putExtra("url", data.results.get(p3).link);
+                        i.putExtra("book", data.results.get(p3));
+                        //Toast.makeText(getApplicationContext(), data.get(p3).get("link"), 1).show();
+                        startActivity(i);
+                    } else {
+                        APP.showToast("书架最多可放80部，放多了存在bug,删除一些不看的书");
+                    }
                 } catch (Exception e) {
                     mHander.obtainMessage(0, e.getMessage()).sendToTarget();
                 }
@@ -182,8 +186,7 @@ public class HomeActivity extends BaseActivity {
                     showList(ss);
                     break;
                 case 2:
-                    //ss=(String) p1.obj;
-                    //Toast.makeText(MainActivity.this,ss,1).show();
+
                     break;
 
             }

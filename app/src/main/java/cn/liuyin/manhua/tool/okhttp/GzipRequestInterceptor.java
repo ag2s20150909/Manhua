@@ -1,7 +1,10 @@
 package cn.liuyin.manhua.tool.okhttp;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -12,6 +15,10 @@ import okio.GzipSink;
 import okio.Okio;
 
 public class GzipRequestInterceptor implements Interceptor {
+    public static final CacheControl FORCE_CACHE = new CacheControl.Builder()
+            .onlyIfCached()
+            .maxStale(Integer.MAX_VALUE, TimeUnit.SECONDS)
+            .build();
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
@@ -22,6 +29,7 @@ public class GzipRequestInterceptor implements Interceptor {
         Request compressedRequest = originalRequest.newBuilder()
                 .header("Content-Encoding", "gzip")
                 .method(originalRequest.method(), gzip(originalRequest.body()))
+                .cacheControl(FORCE_CACHE)
                 .build();
         return chain.proceed(compressedRequest);
     }
