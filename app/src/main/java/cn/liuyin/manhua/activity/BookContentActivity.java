@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.adapter.BookContentAdapter;
 import cn.liuyin.manhua.data.bean.ChaptersBean;
@@ -56,6 +57,10 @@ public class BookContentActivity extends BaseActivity {
     }
 
     public void showData(final ContentBean data) {
+        if (!data.success) {
+            APP.showToast(data.message);
+            return;
+        }
         adapter.updateView(data, index);
         lv.setAdapter(adapter);
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

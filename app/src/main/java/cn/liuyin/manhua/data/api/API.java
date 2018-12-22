@@ -10,8 +10,13 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import cn.liuyin.manhua.APP;
+import cn.liuyin.manhua.data.bean.CategoryBean;
+import cn.liuyin.manhua.data.bean.ChaptersBean;
 import cn.liuyin.manhua.data.bean.RankingBean;
 import cn.liuyin.manhua.data.bean.SearchBean;
+import cn.liuyin.manhua.data.tool.Book;
+import cn.liuyin.manhua.data.tool.BookMaker;
+import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.FileTool;
 import okhttp3.FormBody;
 import okhttp3.Request;
@@ -38,7 +43,8 @@ public class API {
             if (response.isSuccessful()) {
 
                 String version = new JSONObject(Objects.requireNonNull(response.body()).string()).getString("version");
-                APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", version).apply();
+                System.err.println("APP_VerSion:" + response.body().string());
+                APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", "3.1.5").apply();
             } else {
 
             }
@@ -46,6 +52,7 @@ public class API {
             e.printStackTrace();
         }
     }
+
 
     public static String getRanking(String type, int page, int pageSize) {
 
@@ -65,6 +72,36 @@ public class API {
                 FileTool.writeFile("debug.txt", json);
                 System.err.println(json);
                 return new JSONObject(Objects.requireNonNull(json)).toString(4);
+            } else {
+                return "error:" + response.message() + " errorcode:" + response.code();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error:" + e.getMessage();
+        }
+
+    }
+
+    public static String getCheckBook(BookShelf bookShelf) {
+        //&pageSize=20&keyword
+        StringBuilder requests = new StringBuilder();
+        for (Book b : bookShelf.books) {
+            ChaptersBean cs = BookMaker.getCatcheList(b);
+            requests.append(b.bookid).append(";").append(cs.data.list.get(0).cid).append(";").append(b.lastRead).append(",");
+        }
+        requests = new StringBuilder(requests.substring(0, requests.lastIndexOf(",")));
+        System.err.println("APP_VerSion" + requests);
+        FormBody.Builder buider = new FormBody.Builder();
+        buider.add("requests", requests.toString());
+        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        String url = host + "/api/book/read-history";
+
+
+        Request request = new Request.Builder().post(formBody).url(url).build();
+        try {
+            Response response = APP.getOkhttpClient().newCall(request).execute();
+            if (response.isSuccessful()) {
+                return new JSONObject(Objects.requireNonNull(response.body()).string()).getJSONObject("data").toString();
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();
             }
@@ -165,7 +202,6 @@ public class API {
 
                 String json = new JSONObject(Objects.requireNonNull(response.body()).string()).toString();
                 System.out.println(json);
-                FileTool.writeFiles("chapter", bid + "_" + cid + ".json", json);
                 return json;
             } else {
                 return "error:" + response.message() + " errorcode:" + response.code();

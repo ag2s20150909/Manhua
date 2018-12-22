@@ -90,7 +90,13 @@ public class APP extends Application {
         picassoBuilder.downloader(okHttp3Downloader).build();
         Picasso picasso = picassoBuilder.build();
         Picasso.setSingletonInstance(picasso);
-        API.CheckAppVersion();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                API.CheckAppVersion();
+            }
+        }).start();
+
 
 
 

@@ -3,7 +3,11 @@ package cn.liuyin.manhua.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.List;
+
 import cn.liuyin.manhua.APP;
+import cn.liuyin.manhua.data.bean.CheckBookBean;
+import cn.liuyin.manhua.data.tool.Book;
 import cn.liuyin.manhua.data.tool.BookMaker;
 import cn.liuyin.manhua.data.tool.BookShelf;
 import cn.liuyin.manhua.tool.FileTool;
@@ -58,26 +62,12 @@ public class CheckBookUpdateRunnable implements Runnable {
             }
 
             for (int i = 0; i < bookshelf.books.size(); i++) {
-                try {
-                    BookMaker.getList(mContext, bookshelf.books.get(i));
-
-                    bookshelf = BookShelf.getBookShelf();
-                    if (listener != null) {
-                        listener.doUpdate(bookshelf);
-                    }
-                } catch (Exception e) {
-                    if (listener != null) {
-                        if (NetworkUtil.getNetWorkStates(APP.getContext()) == NetworkUtil.TYPE_NONE) {
-                            listener.err("网络没有连接，请检查网络连接。");
-                        } else {
-                            listener.err("【" + bookshelf.books.get(i).name + "】\n" + FileTool.getStackTrace(e));
-                        }
-
-                        //listener.err("【"+bookshelf.books.get(i).name+"】可能被下架，请稍候。\n"+FileTool.getStackTrace(e));
-                    }
-                }
-
+                BookMaker.getList(mContext, bookshelf.books.get(i));
             }
+
+
+
+
             if (listener != null) {
 
                 listener.onFinished();
@@ -85,6 +75,7 @@ public class CheckBookUpdateRunnable implements Runnable {
 
 
         } catch (Exception e) {
+            System.err.print("APP_VerSion" + FileTool.getStackTrace(e));
             if (listener != null) {
                 FileTool.writeError(e);
                 listener.err(FileTool.getStackTrace(e));

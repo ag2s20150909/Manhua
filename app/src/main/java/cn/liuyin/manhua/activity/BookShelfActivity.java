@@ -57,7 +57,7 @@ public class BookShelfActivity extends BaseActivity {
     protected void onStart() {
 
         super.onStart();
-        //BookShelf.sortBooks();
+
         bookshelf = BookShelf.getBookShelf();
         showList(bookshelf, false);
     }
@@ -96,8 +96,9 @@ public class BookShelfActivity extends BaseActivity {
                 @Override
                 public void onFinished() {
                     // TODO: Implement this method
-                    mHander.obtainMessage(0, "检查更新完成").sendToTarget();
                     preferences.edit().putLong("last_check", System.currentTimeMillis()).apply();
+                    mHander.obtainMessage(0, "检查更新完成").sendToTarget();
+
                 }
             });
             fixedThreadPool.execute(runnable
