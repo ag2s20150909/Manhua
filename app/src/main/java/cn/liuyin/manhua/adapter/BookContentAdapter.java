@@ -96,13 +96,14 @@ public class BookContentAdapter extends BaseAdapter {
 
             //Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             //viewHolder.iv.setImageBitmap(bitmap);
-            ImgLoader.getInstence().load(file, viewHolder.iv);
+            ImgLoader.getInstance().load(file, viewHolder.iv);
             //Picasso bug,不能读取本地图片 emmmmmmmmm.
             //Picasso.get().load(file).placeholder(R.drawable.ic_loading).error(R.mipmap.ic_launcher).noFade().into(viewHolder.iv);
 
         } else {
             String url = data.img;
             String tag1 = "https://manhua.qpic.cn";
+            //部分图片链接不规范，需要截取处理
             if (url.contains(tag1)) {
                 url = url.substring(url.indexOf(tag1));
             }

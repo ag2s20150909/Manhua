@@ -10,10 +10,10 @@ import java.io.File;
 import cn.liuyin.manhua.R;
 
 public class ImgLoader {
-    Handler handler;
-    static ImgLoader me;
+    private Handler handler;
+    private static ImgLoader me;
 
-    public static ImgLoader getInstence() {
+    public static ImgLoader getInstance() {
         if (me == null) {
             me = new ImgLoader();
         }

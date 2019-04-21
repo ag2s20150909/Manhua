@@ -3,8 +3,6 @@ package cn.liuyin.manhua;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import com.squareup.picasso.OkHttp3Downloader;
@@ -15,6 +13,11 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.jony.okhttpplus.lib.httpdns.DNSCache;
+import cn.jony.okhttpplus.lib.httpdns.DNSCacheConfig;
+import cn.jony.okhttpplus.lib.httpdns.strategy.HostResolveStrategy;
+import cn.jony.okhttpplus.lib.okhttp.DnsVisitNetInterceptor;
+import cn.jony.okhttpplus.lib.okhttp.HttpDNS;
 import cn.liuyin.manhua.data.api.API;
 import cn.liuyin.manhua.tool.CrashHandler;
 import cn.liuyin.manhua.tool.okhttp.GzipRequestInterceptor;
@@ -40,6 +43,8 @@ public class APP extends Application {
     public static okhttp3.OkHttpClient getOkhttpClient() {
         if (mClient == null) {
             mClient = new OkHttpClient.Builder()
+                    .dns(new HttpDNS())
+                    .addNetworkInterceptor(new DnsVisitNetInterceptor())
                     //.addInterceptor(new GzipRequestInterceptor())
                     .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
                     .addNetworkInterceptor(new ShortCacheInterceptor())
@@ -51,6 +56,8 @@ public class APP extends Application {
     public static okhttp3.OkHttpClient getCachehttpClient() {
         if (mCacheClient == null) {
             mCacheClient = new OkHttpClient.Builder()
+                    .dns(new HttpDNS())
+                    .addNetworkInterceptor(new DnsVisitNetInterceptor())
                     //.addInterceptor(new GzipRequestInterceptor())
                     .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
                     .build();
@@ -64,6 +71,8 @@ public class APP extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        DNSCache.Instance.init(this.getApplicationContext(), new DNSCacheConfig.Builder().build(),
+                HostResolveStrategy.SYNC);
         fixdeThreadPool = Executors.newFixedThreadPool(1);
         CrashHandler.getInstance().init(this)
                 .setOnCrashListener(new CrashHandler.OnCrashListener() {
@@ -81,6 +90,8 @@ public class APP extends Application {
 
         okhttp3.Cache cache = new okhttp3.Cache(file, 1024 * 1024 * 500);
         okhttp3.OkHttpClient client = new OkHttpClient.Builder()
+                .dns(new HttpDNS())
+                .addNetworkInterceptor(new DnsVisitNetInterceptor())
                 .addInterceptor(new GzipRequestInterceptor())
                 .cache(cache)
                 .build();
@@ -105,9 +116,6 @@ public class APP extends Application {
     public static void showToast(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
     }
-
-
-
 
 
 }
