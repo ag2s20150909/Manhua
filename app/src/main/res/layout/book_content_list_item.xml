@@ -8,7 +8,6 @@
         android:adjustViewBounds="true"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        app:srcCompat=="@drawable/ic_loading"
         android:id="@+id/content_item_img"
         android:contentDescription="TODO" />
 
