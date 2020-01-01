@@ -15,3 +15,9 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build  --stacktrace
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: Padavan-360P2
+        path: /opt/images
