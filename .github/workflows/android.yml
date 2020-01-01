@@ -19,5 +19,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: always()
       with:
-        name: Padavan-360P2
-        path: /opt/images
+        name: build
+        path: D:/a/Manhua/Manhua/app/build/
