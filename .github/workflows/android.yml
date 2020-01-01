@@ -20,4 +20,4 @@ jobs:
       if: always()
       with:
         name: build
-        path: D:/a/Manhua/Manhua/app/build/
+        path: D:/a/Manhua/Manhua/app/build/outputs/apk/
