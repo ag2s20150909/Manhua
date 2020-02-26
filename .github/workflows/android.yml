@@ -23,6 +23,7 @@ jobs:
         path: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@1.0.0
+      id: gg
       with:
           name: app-debug.apk
           path: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
