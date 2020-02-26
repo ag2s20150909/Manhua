@@ -21,3 +21,11 @@ jobs:
       with:
         name: build
         path: D:/a/Manhua/Manhua/app/build/outputs/apk/
+    - name: Action Release
+      uses: yakuhzi/action-release@v1.2.0
+      with:
+       file: D:/a/Manhua/Manhua/app/build/outputs/apk/
+       #changelog: /path/to/CHANGELOG.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
