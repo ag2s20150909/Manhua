@@ -21,11 +21,10 @@ jobs:
       with:
         name: build
         path: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
-    - name: Action Release
-      uses: yakuhzi/action-release@v1.2.0
+    - name: Upload to Release Action
+      uses: Shopify/upload-to-release@1.0.0
       with:
-       file: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
-       changelog: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/output.json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          name: app-debug.apk
+          path: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          content-type: application/zip # Optional
