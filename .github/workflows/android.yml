@@ -20,7 +20,7 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.R_TOKEN }}
-        file: app/build/outputs/apk/debug/app-debug.apk
+        file: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
         tag: AtuoBuild
         overwrite: true
         file_glob: true
