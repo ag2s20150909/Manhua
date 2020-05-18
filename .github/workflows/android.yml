@@ -1,6 +1,5 @@
 name: Android CI
 
-
 on:
   push:
     branches: [ master ]
@@ -10,7 +9,8 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 1.8
@@ -24,7 +24,7 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.R_TOKEN }}
-        file: D:/a/Manhua/Manhua/app/build/outputs/apk/debug/app-debug.apk
+        file: app/build/outputs/apk/debug/app-debug.apk
         tag: AtuoBuild
         overwrite: true
         file_glob: true
