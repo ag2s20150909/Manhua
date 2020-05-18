@@ -25,7 +25,7 @@ import okhttp3.Response;
 public class API {
 
     //OkHttpClient client;
-    private static final String host = "http://client.api.pufei.net";
+    private static final String host = "http://client.api.nrqu.net";
 
 
     private API() {
