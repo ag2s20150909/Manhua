@@ -18,7 +18,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: ./gradlew build
+      run: chmod +x gradlew &&./gradlew assembleDebug
   
     - name: 上传二进制文件以发布
       uses: svenstaro/upload-release-action@v1-release
