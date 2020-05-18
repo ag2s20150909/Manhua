@@ -3,14 +3,15 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 28
+   compileSdkVersion 29
+   buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "cn.liuyin.manhua"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 4
         versionName "1.0.3-2019.04.21"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "zh"
         vectorDrawables.useSupportLibrary = true
     }
@@ -25,7 +26,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion '29.0.0 rc2'
+   
 }
 
 dependencies {
