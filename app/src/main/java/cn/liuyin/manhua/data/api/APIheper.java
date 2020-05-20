@@ -29,14 +29,15 @@ class APIheper {
      * @return builder
      */
     public static FormBody.Builder getFormBuider(FormBody.Builder builder) {
+
         TreeMap<String, String> map = new TreeMap<>();
         builder.add("uid", "0");
-        String version = APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).getString("version", "3.1.5");
+        String version = APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).getString("version", "3.3.0");
         builder.add("channel_id", "6192");
         //System.err.println("APP_DEBUG:" + version);
         builder.add("app_version", version);
         builder.add("timestamp", System.currentTimeMillis() + "");
-        builder.add("pvdevice_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));
+        builder.add("device_id", ComonTool.getMD5String("Android" + System.currentTimeMillis()));
         builder.add("token", "");
         int i = 0;
 
@@ -44,6 +45,7 @@ class APIheper {
             map.put(builder.build().encodedName(i).toLowerCase(), builder.build().encodedValue(i));
             i += 1;
         }
+
         builder.add("sign", getSign(map));
         return builder;
     }

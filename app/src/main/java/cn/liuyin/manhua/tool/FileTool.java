@@ -211,6 +211,25 @@ public class FileTool {
 
         writeError(getStackTrace(e));
     }
+    public static void writeLog(String name,String content) {
+        String path = BASEPATH;
+        try {
+            File f = new File(BASEPATH);
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+            File file = new File(path, name);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file, true);
+            fw.write(content + "\n");
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            //Toast.makeText(APP.getContext(),e.getMessage(),1).show();
+        }
+    }
 
     public static String getStackTrace(Throwable throwable) {
         StringWriter sw = new StringWriter();

@@ -1,44 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/name_bg"
-	android:orientation="horizontal">
+    android:orientation="horizontal">
 
-	<TextView
-		android:layout_height="50dp"
-		android:layout_width="50dp"
-		android:gravity="center"
-		android:background="@drawable/rand_background"
-		android:id="@+id/unread"
-		android:textColor="#000000"/>
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_loading"
+        tools:ignore="VectorDrawableCompat" />
 
     <LinearLayout
-        android:orientation="vertical"
-		android:layout_height="50dp"
         android:layout_width="0dp"
-        android:layout_weight="1.0">
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_height="30dp"
-            android:layout_width="match_parent"
             android:id="@+id/name"
-            android:gravity="center_vertical"
-            android:textColor="#000000"
-            android:text="狐妖小红娘"
-			tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/time"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text="2018-09-12-12：23"
-            android:textColor="#FF000000"
-            android:gravity="end"
-            android:paddingEnd="10dp"
-			tools:ignore="HardcodedText" />
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:text="狐妖小红娘"
+            android:textColor="#000000"
+            tools:ignore="HardcodedText" />
+		<TextView
+			android:id="@+id/new_c"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:text="狐妖小狐狸峰会并发表的"
+			android:textColor="#FF000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--			android:background="@drawable/rand_background"-->
+            <TextView
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+                android:id="@+id/unread"
+                android:layout_width="40dp"
+                android:layout_height="20dp"
+                android:text="222"
+                android:gravity="center"
+                android:textColor="#000000" />
+
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:gravity="end"
+                android:paddingEnd="10dp"
+                android:text="2018-09-12-12：23"
+                android:textColor="#FF000000"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
     </LinearLayout>
 

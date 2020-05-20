@@ -71,6 +71,7 @@ public class HTTPDnsTool {
             public void run() {
                 // TODO: Implement this method
                 String url = "https://rubyfish.cn//dns-query?name=" + name;
+                url = "http://dns.alidns.com/resolve?type=1&name=" + name;
 
                 if (DiskCache.getInstance().getString(name) != null) {
                     return;

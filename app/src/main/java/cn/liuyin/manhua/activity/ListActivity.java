@@ -66,6 +66,8 @@ public class ListActivity extends BaseActivity {
         url = getIntent().getStringExtra("url");
         if (FileTool.has("bid", book.bookid + ".json")) {
             data = BookMaker.getCatcheList(book);
+            book.state=data.data.state;
+            BookShelf.updateBook(book);
             showList(data);
         }
 
@@ -142,6 +144,7 @@ public class ListActivity extends BaseActivity {
 
         int possion;
         book = BookShelf.getBookById(book.bookid);
+
         possion = book != null ? book.index : 1;
         if (adapter == null) {
             adapter = new BookListAdapter(ListActivity.this, chapters, possion);

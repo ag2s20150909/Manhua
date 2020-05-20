@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.tool.Book;
@@ -61,6 +64,8 @@ public class BookShelfAdapter extends BaseAdapter {
             viewHolder.tv_unread = convertView.findViewById(R.id.unread);
             viewHolder.tv_name = convertView.findViewById(R.id.name);
             viewHolder.tv_time = convertView.findViewById(R.id.time);
+            viewHolder.tv_new = convertView.findViewById(R.id.new_c);
+            viewHolder.iv_img = convertView.findViewById(R.id.img);
 
             convertView.setTag(viewHolder);
         } else {
@@ -70,13 +75,17 @@ public class BookShelfAdapter extends BaseAdapter {
         int unread = book.count - book.index;
         viewHolder.tv_unread.setText(String.valueOf(unread));
         viewHolder.tv_name.setText(book.name);
+        viewHolder.tv_new.setText(book.newChapter);
         viewHolder.tv_time.setText(TimeTool.getTimeString(book.lastUpdateTime));
+        Picasso.get().load(book.img).placeholder(R.drawable.ic_loading).into(viewHolder.iv_img);
 
 
         if (unread > 0) {
-            viewHolder.tv_unread.setBackgroundResource(R.drawable.rand_background_accent);
+//            viewHolder.tv_unread.setBackgroundResource(R.drawable.rand_background_accent);
+            viewHolder.tv_unread.setBackgroundColor(mContext.getResources().getColor(R.color.accent));
         } else {
-            viewHolder.tv_unread.setBackgroundResource(R.drawable.rand_background);
+//            viewHolder.tv_unread.setBackgroundResource(R.drawable.rand_background);
+            viewHolder.tv_unread.setBackgroundColor(mContext.getResources().getColor(R.color.primary_light));
         }
 
 
@@ -94,6 +103,8 @@ public class BookShelfAdapter extends BaseAdapter {
         TextView tv_unread;
         TextView tv_name;
         TextView tv_time;
+        TextView tv_new;
+        ImageView iv_img;
 
     }
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.liuyin.manhua.tool.FileTool;
 import okhttp3.Dns;
 
 
@@ -41,7 +42,7 @@ public class OkHttpDns implements Dns {
         //String ip = httpdns.getIpByHostAsync(hostname);
         if (ip != null) {
             //如果ip不为null，直接使用该ip进行网络请求
-//			FileTool.writeLog("dns log.txt","HttpDNS:"+hostname+" IP:"+ip);
+            FileTool.writeLog("dns log.txt", "HttpDNS:" + hostname + " IP:" + ip);
             String[] ips = ip.split(";");
             List<InetAddress> inetAddresses = new ArrayList<>();
             for (String s : ips) {

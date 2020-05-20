@@ -1,14 +1,13 @@
 package cn.liuyin.manhua.data.api;
 
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Random;
 
 import cn.liuyin.manhua.APP;
 import cn.liuyin.manhua.data.bean.ChaptersBean;
@@ -24,33 +23,54 @@ import okhttp3.Response;
 public class API {
 
     //OkHttpClient client;
-    private static final String host = "http://client.api.nrqu.net";
+    //private static final String host = "http://client.api.nrqu.net";
+    public static String[] BASE_URLS = {
+            "http://client.api.fffapi.com",
+            "http://client.api.fffimage.com",
+            "http://client.api.iixiaoming.com",
+            "http://client.api.pocomic.com"};
+    private static final String host = "http://client.api.fffimage.com";
 
 
     private API() {
     }
 
 
-    public static void CheckAppVersion() {
-        FormBody.Builder buider = new FormBody.Builder();
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/Sys/CheckAppVersion";
+//    public static void CheckAppVersion() {
+//        FormBody.Builder buider = new FormBody.Builder();
+//        FormBody formBody = APIheper.getFormBuider(buider).build();//
+//        String url = host + "/api/Sys/CheckAppVersion";
+//
+//        Request request = new Request.Builder().post(formBody).url(url).build();
+//        try {
+//            Response response = APP.getOkhttpClient().newCall(request).execute();
+//            if (response.isSuccessful()) {
+//
+//                String version = new JSONObject(Objects.requireNonNull(response.body()).string()).getString("version");
+//                System.err.println("APP_VerSion:" + Objects.requireNonNull(response.body()).string());
+//                APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", "3.1.5").apply();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        Request request = new Request.Builder().post(formBody).url(url).build();
-        try {
-            Response response = APP.getOkhttpClient().newCall(request).execute();
-            if (response.isSuccessful()) {
+    public static String getHost(){
 
-                String version = new JSONObject(Objects.requireNonNull(response.body()).string()).getString("version");
-                System.err.println("APP_VerSion:" + Objects.requireNonNull(response.body()).string());
-                APP.getContext().getSharedPreferences("api", Context.MODE_PRIVATE).edit().putString("version", "3.1.5").apply();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Random rand = new Random();
+
+        int randNumber =rand.nextInt(3 - 0 + 1) + 0;
+        return BASE_URLS[randNumber];
     }
 
-
+    /**
+     * 获取分类
+     *
+     * @param type
+     * @param page
+     * @param pageSize
+     * @return
+     */
     public static String getRanking(String type, int page, int pageSize) {
 
         //rankType=newOnline&page=1
@@ -58,8 +78,8 @@ public class API {
         buider.add("rankType", type);
         buider.add("page", page + "");
         buider.add("pageSize", pageSize + "");
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/book/ranking";
+        FormBody formBody = buider.build(); //APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/book/ranking";
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
@@ -90,8 +110,8 @@ public class API {
         System.err.println("APP_VerSion" + requests);
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("requests", requests.toString());
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/book/read-history";
+        FormBody formBody = buider.build();// APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/book/read-history";
 
 
         Request request = new Request.Builder().post(formBody).url(url).build();
@@ -113,8 +133,8 @@ public class API {
     public static String getCategory() {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/book/category";
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/book/category";
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
@@ -142,8 +162,8 @@ public class API {
         buider.add("page", page + "");
         buider.add("pageSize", pageSize + "");
 
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/book/cate-detail";
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/book/cate-detail";
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
@@ -164,8 +184,8 @@ public class API {
     public static String getRecom() {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/recom/index";
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/recom/index";
 
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
@@ -188,8 +208,8 @@ public class API {
         //&bid=320&sortType=ASC
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("cid", cid).add("bid", bid);
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
-        String url = host + "/api/book/contents";
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
+        String url = getHost() + "/api/book/contents";
 
 
         Request request = new Request.Builder().post(formBody).url(url).build();
@@ -216,9 +236,9 @@ public class API {
         //&bid=320&sortType=ASC
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("sortType", "ASC").add("bid", bookid);
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
         //String url=host + "/api/recom/index";
-        String url = host + "/api/book/chapters";
+        String url =getHost() + "/api/book/chapters";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
@@ -234,6 +254,14 @@ public class API {
 
     }
 
+    /**
+     * 搜索漫画
+     *
+     * @param kw       搜索的关键字
+     * @param page     搜索的页码
+     * @param pageSize 页面尺寸
+     * @return 返回API数据字符串
+     */
     public static String search_1(String kw, int page, int pageSize) {
         //POST /api/book/search HTTP/1.1
 
@@ -243,9 +271,9 @@ public class API {
         buider.add("keyword", kw);
         buider.add("page", page + "");
         buider.add("pageSize", pageSize + "");
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
 
-        String url = host + "/api/book/search";
+        String url = getHost()+ "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
@@ -265,9 +293,9 @@ public class API {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("bid", bookid);
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
         //String url=host + "/api/recom/index";
-        String url = host + "/api/book/cartoon-info";
+        String url = getHost() + "/api/book/cartoon-info";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
@@ -287,9 +315,9 @@ public class API {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("bid", bookid);
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        FormBody formBody = buider.build();// APIheper.getFormBuider(buider).build();//
         //String url=host + "/api/recom/index";
-        String url = host + "/api/book/cartoon-info";
+        String url =getHost() + "/api/book/cartoon-info";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
@@ -310,8 +338,8 @@ public class API {
         SearchBean result = new SearchBean();
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("pageSize", pagesize + "").add("keyword", kw).add("page", page + "");
-        FormBody formBody = APIheper.getFormBuider(buider).build();
-        String url = host + "/api/book/search";
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();
+        String url = getHost()+ "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();
@@ -339,9 +367,9 @@ public class API {
         //&pageSize=20&keyword
         FormBody.Builder buider = new FormBody.Builder();
         buider.add("pageSize", "20").add("keyword", kw).add("page", "1");
-        FormBody formBody = APIheper.getFormBuider(buider).build();//
+        FormBody formBody = buider.build();//APIheper.getFormBuider(buider).build();//
         //String url=host + "/api/recom/index";
-        String url = host + "/api/book/search";
+        String url = getHost()  + "/api/book/search";
         Request request = new Request.Builder().post(formBody).url(url).build();
         try {
             Response response = APP.getOkhttpClient().newCall(request).execute();

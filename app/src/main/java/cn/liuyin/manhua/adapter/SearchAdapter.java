@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import cn.liuyin.manhua.R;
 import cn.liuyin.manhua.data.bean.SearchResult;
@@ -57,6 +60,7 @@ public class SearchAdapter extends BaseAdapter {
             viewHolder.tv_author = convertView.findViewById(R.id.author);
             viewHolder.tv_new = convertView.findViewById(R.id.new_c);
             viewHolder.tv_time = convertView.findViewById(R.id.time);
+            viewHolder.iv_img=convertView.findViewById(R.id.img);
 
             convertView.setTag(viewHolder);
         } else {
@@ -67,6 +71,7 @@ public class SearchAdapter extends BaseAdapter {
         viewHolder.tv_author.setText(book.author);
         viewHolder.tv_new.setText(book.newChapter);
         viewHolder.tv_time.setText(book.updateTime);
+        Picasso.get().load(book.img).placeholder(R.drawable.ic_loading).into(viewHolder.iv_img);
 
 
         return convertView;
@@ -87,6 +92,7 @@ public class SearchAdapter extends BaseAdapter {
         TextView tv_author;
         TextView tv_new;
         TextView tv_time;
+        ImageView iv_img;
 
 
     }

@@ -43,6 +43,8 @@ public class SearchResult implements Serializable {
             b.newChapter = it.lastUpdateTitle;
             b.lastUpdateTime = it.lastUpdateTime;
             b.type = it.keywords;
+            b.state = it.state;
+            b.introduction = it.introduction;
             this.add(b);
         }
     }
@@ -59,6 +61,8 @@ public class SearchResult implements Serializable {
             b.newChapter = it.lastUpdateTitle;
             b.lastUpdateTime = it.lastUpdateTime;
             b.type = it.tclass;
+            b.state = it.state;
+            b.introduction = it.introduction;
             this.add(b);
         }
     }
@@ -76,6 +80,8 @@ public class SearchResult implements Serializable {
             b.newChapter = it.lastUpdateTitle;
             b.lastUpdateTime = it.lastUpdateTime;
             b.type = it.keywords;
+            b.state = it.state;
+            b.introduction = it.introduction;
             this.add(b);
         }
     }

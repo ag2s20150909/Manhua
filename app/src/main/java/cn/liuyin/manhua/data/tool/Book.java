@@ -13,11 +13,14 @@ public class Book implements Serializable {
     public String type;
     public String newChapter;
     public String updateTime;
+    public String state;
+    public String introduction;
     public int lastRead;
     public int lastUpdateTime;
     public int bookid;
     public int count = 1;
     public int index = 1;
+
 
 
     @Override

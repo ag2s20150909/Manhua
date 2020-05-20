@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.liuyin.manhua.data.api.API;
+import cn.liuyin.manhua.data.api.ApiInterceptor;
 import cn.liuyin.manhua.tool.CrashHandler;
 import cn.liuyin.manhua.tool.okhttp.GzipRequestInterceptor;
 import cn.liuyin.manhua.tool.okhttp.OkHttpDns;
@@ -40,6 +41,7 @@ public class APP extends Application {
             mClient = new OkHttpClient.Builder()
                     .dns(OkHttpDns.getInstance(mContext))
                     //.addInterceptor(new GzipRequestInterceptor())
+                    .addInterceptor(new ApiInterceptor())
                     .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
                     .addNetworkInterceptor(new ShortCacheInterceptor())
                     .build();
@@ -52,6 +54,7 @@ public class APP extends Application {
             mCacheClient = new OkHttpClient.Builder()
                     .dns(OkHttpDns.getInstance(mContext))
                     //.addInterceptor(new GzipRequestInterceptor())
+                    .addInterceptor(new ApiInterceptor())
                     .cache(new okhttp3.Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 500 * 1024 * 1024))
                     .build();
         }
@@ -84,7 +87,7 @@ public class APP extends Application {
         okhttp3.Cache cache = new okhttp3.Cache(file, 1024 * 1024 * 500);
         okhttp3.OkHttpClient client = new OkHttpClient.Builder()
                 .dns(OkHttpDns.getInstance(mContext))
-                .addInterceptor(new GzipRequestInterceptor())
+                //.addInterceptor(new GzipRequestInterceptor())
                 .cache(cache)
                 .build();
 
@@ -93,12 +96,12 @@ public class APP extends Application {
         picassoBuilder.downloader(okHttp3Downloader).build();
         Picasso picasso = picassoBuilder.build();
         Picasso.setSingletonInstance(picasso);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                API.CheckAppVersion();
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                API.CheckAppVersion();
+//            }
+//        }).start();
 
 
     }

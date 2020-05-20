@@ -38,7 +38,7 @@ public class HttpTool {
 
         OkHttpClient client = buider.build();
         Request.Builder requestbuilder = new Request.Builder().get().url(url);
-        requestbuilder.header("Referer", "m.pufei.net");
+        requestbuilder.header("Referer", "m.pufei8.com/");
 
         requestbuilder.header("User-Agent", WebSettings.getDefaultUserAgent(APP.getContext()));
 
